@@ -5,6 +5,31 @@ import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [email, setEmail]=useState('');
+  const [password, setPassword]=useState('');
+  const [erro, setErro]=useState('');
+
+  const handleLogin=async()=>{
+    setErro('');
+    try{
+      const response=await fetch('http://localhost:8080/api/user/login', {
+        method: 'POST',
+        headers:{
+          'Content-Type':'application/json',
+        },
+        body: JSON.stringify({email, password: password})
+      });
+      if(!response.ok){
+        throw new Error('login failed! Verifique suas credenciais.');
+      }
+      const data=await response.json();
+      const token=data.token;
+      localStorage.setItem('meu_token_jwt', token);
+      alert('Login successful!')
+    }catch(error){
+      setErro('Erro ao fazer ')
+    }
+  }
 
   return (
   <>
@@ -18,26 +43,42 @@ function App() {
           <p>
             Email
           </p>
-          <input type="email" className='
+          <input type="email" 
+          value={email} 
+          onChange={(e)=>setEmail(e.target.value)} 
+          className='
           bg-gray-200 
           rounded-sm 
           w-5/6 sm:w-10/12 lg:w-8/12 xl:w-1/2
-          mb-2.5'/>
+          mb-2.5
+          '/>
         </div>
-
-
-
-
-
-        
         <div className='text-center'>{/*div-senha*/}
           <p>
             Password
           </p>
-          <input type="password" className='bg-gray-200 rounded-sm w-5/6 md:w-1/2 mb-2.5'/>
+          <input type="password" 
+          value={password} 
+          onChange={(e)=>setPassword(e.target.value)}
+          className='
+          bg-gray-200 
+          rounded-sm 
+          w-5/6 sm:w-10/12 lg:w-8/12 xl:w-1/2 
+          mb-2.5
+          '/>
         </div> 
         <div className='text-center'>{/*div-botao*/}
-          <button className='bg-blue-100 pt-1 pb-1 pl-2.5 pr-2.5 mt-2.5 rounded-sm'>enviar</button>
+          <button onClick={handleLogin}
+          className='
+          bg-blue-100 
+          pt-1 pb-1 pl-2.5 pr-2.5 
+          mt-2.5 
+          rounded-sm
+          hover:bg-blue-300
+          active:bg-blue-500
+          transition-colors duration-500 delay-50
+          '>enviar</button>
+          {erro && <p className='text-red-500 mt-2'>{erro}</p>}
         </div>
       </div>
       </div>
