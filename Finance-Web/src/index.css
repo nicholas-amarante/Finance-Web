@@ -1,1 +1,41 @@
 @import "tailwindcss";
+
+@theme {
+  /* Paleta Financeira Personalizada */
+  --color-finance-primary: #10b981;    /* Esmeralda Vibrante */
+  --color-finance-dark: #064e3b;       /* Esmeralda Escuro */
+  --color-finance-bg: #0f172a;         /* Slate (Azul acinzentado escuro) */
+  --color-finance-card: #1e293b;       /* Slate mais claro para cartões */
+  --color-gold-accent: #f59e0b;        /* Dourado para detalhes */
+}
+
+/* Reset básico e fontes */
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark light;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--color-finance-bg);
+  color: #f8fafc;
+}
+
+/* Scrollbar Bonita */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
