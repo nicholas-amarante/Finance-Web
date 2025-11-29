@@ -1,16 +1,17 @@
 import type { Config } from "tailwindcss";
 
-export default{
-    content:[
-        "./index.html",
-        "./src/**/*.{js, ts, jsx, tsx}",
-    ],
-    theme:{
-        extend:{
-            fontFamily:{
-                sans:['Jura', 'sans-serif'],
-            },
-        },
+const config: Config = {
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        'jura': ['Jura', 'sans-serif'],
+      },
     },
-    plugins:[],
-} satisfies Config
+  },
+  plugins: [],
+}
+
+export default config
