@@ -1,4 +1,5 @@
 import '../App.css';
+import byteFoto from '../assets/byte.png';
 
 function Home(){
     return(
@@ -6,8 +7,8 @@ function Home(){
         <div className="bg-gradient-to-bl from-[#404658] to-[#8A96BE] h-screen w-screen
         noise
         ">
-            <div className="">
-                <div className="">
+            <div className="h-screen w-screen flex flex-col">
+                <div className="h-screen w-screen flex flex-col">
                     <div className="mt-2.5 flex justify-end">
                         <p className="
                         mr-4
@@ -25,6 +26,12 @@ function Home(){
                         ">
                         <a href="/register">Sign up</a>
                         </p>
+                    </div>
+                    <div className='bg-white h-5/12 w-5/12'>
+
+                    </div>
+                    <div>
+                        <img src={byteFoto} alt="" className="relative z-10 h-80"/>
                     </div>
                 </div>
                 <div>

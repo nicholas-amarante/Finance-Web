@@ -1,6 +1,7 @@
 import '../index.css'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { IoIosArrowForward } from "react-icons/io";
 
 function Register(){
     const navigate=useNavigate();
@@ -46,9 +47,9 @@ function Register(){
     return(
     <>
         <div className='noise gradt h-screen w-screen flex flex-col'>
-            <div className='realtive z-10 respMenu ml-5 mt-5 rounded-md'>
-                <div className='bg-white'>
-
+            <div className='realtive z-10 menu'>
+                <div className=''>
+                    <IoIosArrowForward className='IoIosArrowForward'/>
                 </div>
             </div>
             <div className='relative z-10 h-9/12 w-12/12 m-auto justify-center'>

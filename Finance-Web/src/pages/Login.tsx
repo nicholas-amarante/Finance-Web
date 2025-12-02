@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import reactLogo from '../assets/react.svg';
 import viteLogo from '../../public/sf.svg';
+import { IoIosArrowForward } from "react-icons/io";
 
 function Login() {
   const navigate=useNavigate();
@@ -35,29 +36,31 @@ function Login() {
 
   return (
   <>
-    <div className="noise gradt w-screen h-screen p-4">{/*Fundo*/}
-      <div className='relative z-10'>{/*Titulo login*/}
-        <h1 className='h-1/6 m-auto text-center text-3xl font-bold text-white'>LOGIN</h1>
+    <div className="noise gradt w-screen h-screen">{/*Fundo*/}
+      <div className='relative z-10 menu'>
+        <div className=''>
+          <IoIosArrowForward className='IoIosArrowForward'/>
+        </div>
       </div>
-      <div className='relative z-10 h-10/12 flex flex-col justify-center'>{/*primeiro corpo*/}
+      <div className='relative z-10 h-screen flex flex-col justify-center'>{/*primeiro corpo*/}
         <div className='bg-white h-80 w-80 md:h-6/12 md:w-2/6 m-auto rounded-lg flex flex-col justify-center'>{/*caixa central*/}
-        <div className='h-1/5 text-center'>{/*div-email*/}
+        <div className='h-1/5 w-7/12 flex flex-col m-auto'>{/*div-email*/}
           <p className='font-p'>
             Email
           </p>
-          <input type="email" 
-          value={email} 
-          onChange={(e)=>setEmail(e.target.value)} 
-          className='bg-gray-300 rounded-sm w-5/6 h-6/12 sm:w-10/12 lg:w-8/12 xl:w-1/2 mb-2.5  '/>
+          <input type="email"
+          value={email}
+          onChange={(e)=>setEmail(e.target.value)}
+          className='bg-gray-300 rounded-sm w-5/6 h-6/12 sm:w-10/12 lg:w-8/12 xl:w-1/1 mb-2.5  '/>
         </div>
-        <div className='h-1/5 text-center'>{/*div-senha*/}
+        <div className='h-1/5 w-7/12 flex flex-col m-auto'>{/*div-senha*/}
           <p className='font-p'>
             Password
           </p>
           <input type="password" 
           value={password} 
           onChange={(e)=>setPassword(e.target.value)}
-          className='bg-gray-300 rounded-sm w-5/6 h-6/12 sm:w-10/12 lg:w-8/12 xl:w-1/2 mb-2.5  '/>
+          className='bg-gray-300 rounded-sm w-5/6 h-6/12 sm:w-10/12 lg:w-8/12 xl:w-1/1 mb-2.5  '/>
         </div> 
         <div className='text-center'>{/*div-botao*/}
           <button onClick={handleLogin}

@@ -29,12 +29,15 @@
 */
 
 .font-p{
-    font-family: 'Jura', sans-serif;    
+    font-family: 'Jura', sans-serif; 
 }
 
 @layer{
-    .respMenu{
-        @apply bg-white h-10 w-10
+    .menu{
+        @apply bg-white h-10 w-10 ml-5 mt-5 rounded-md flex items-center justify-center
+    }
+    .IoIosArrowForward{
+        @apply text-xl
     }
     .gradt{
         @apply bg-gradient-to-bl from-[#8A96BE] to-[#404658]
