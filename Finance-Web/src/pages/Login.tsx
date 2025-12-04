@@ -41,19 +41,17 @@ function Login() {
   return (
   <>
     <div className="noise gradt w-screen h-screen">
-      <div className='relative z-10 menu'>
-        <div className=''>
-          <button onClick={toggleMenu}
-          className=''>
-            <IoIosArrowForward className='IoIosArrowForward'/>
-          </button>
-          {isMenuOpen && (
-            <div>
-              <a href="">teste</a>
-              <a href="">teste</a>
-            </div>
-          )}
-        </div>
+      <div className='z-10 menu'>
+        <button onClick={toggleMenu}
+          className={`absolute ${isMenuOpen?'rotate-90':'rotate-0'}`}>
+          <IoIosArrowForward className='IoIosArrowForward '/>
+        </button>
+        {isMenuOpen && (
+          <div className='bg-gray-200 flex flex-col mt-30 z-20'>
+            <a href="http://localhost:5173/">Home</a>
+            <a href="http://localhost:5173/register">Register</a>
+          </div>
+        )}
       </div>
       <div className='relative z-10 h-screen flex flex-col'>
         <div className='bg-white h-80 w-85 sm:h-5/12 md:h-6/12 sm:w-3/5 md:w-3/5 lg:w-1/2 xl:w-1/3 m-auto rounded-lg flex flex-col justify-center'>{/*caixa central*/}

@@ -10,6 +10,14 @@ function Register(){
     const [cpf, setCpf]=useState('');
     const [password, setPassword]=useState('');
     const [erro, setErro]=useState('');
+    const [isMenuOpen, setIsMenuOpen]=useState(false);
+
+    const toggleMenu=()=>{
+    setIsMenuOpen(!isMenuOpen);
+    };
+
+
+
 
     const handleRegister=async()=>{
         setErro('');
@@ -48,9 +56,16 @@ function Register(){
     <>
         <div className='noise gradt h-screen w-screen flex flex-col'>
             <div className='realtive z-10 menu'>
-                <div className=''>
-                    <IoIosArrowForward className='IoIosArrowForward'/>
-                </div>
+                <button onClick={toggleMenu}
+                className={`absolute ${isMenuOpen?'rotate-90':'rotate-0'}`}>
+                    <IoIosArrowForward className='IoIosArrowForward '/>
+                </button>
+                {isMenuOpen && (
+                    <div className='bg-gray-200 flex flex-col mt-30 z-20'>
+                        <a href="http://localhost:5173/">Home</a>
+                        <a href="http://localhost:5173/register">Register</a>
+                    </div>
+                )}
             </div>
             <div className='relative z-10 h-9/12 w-12/12 m-auto justify-center'>
                     <div className='bg-white h-11/12 w-80 sm:w-7/12 lg:w-7/12 xl:w-4/10 m-auto rounded-lg flex flex-col justify-center'>{/*central-box*/}
