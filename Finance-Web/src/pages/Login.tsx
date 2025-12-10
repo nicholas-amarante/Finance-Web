@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoIosArrowForward } from "react-icons/io";
 import { useAuth } from '../hooks/useAuth';
+import ExpandableMenu from '../components/ExpandableMenu';
+import LogoutButton from '../components/LogoutButton';
 
 function Login() {
   const navigate=useNavigate();
@@ -10,7 +12,7 @@ function Login() {
   const [password, setPassword]=useState('');
   const [erro, setErro]=useState('');
   const [isMenuOpen, setIsMenuOpen]=useState(false);
-  const isLoggedIn=useAuth(); 
+  const isLoggedIn=useAuth();
 
   const toggleMenu=()=>{
     setIsMenuOpen(!isMenuOpen);
@@ -41,21 +43,8 @@ function Login() {
   return (
   <>
     <div className="noise gradt w-screen h-screen">
-      <div className='z-10 menu'>
-        <button onClick={toggleMenu}
-          className={`absolute ${isMenuOpen?'rotate-90':'rotate-0'}`}>
-          <IoIosArrowForward className='IoIosArrowForward '/>
-        </button>
-        {isMenuOpen && (
-          <div className='bg-gray-200 flex flex-col mt-30 z-20 p-1 rounded-sm'>
-            <a href="/" className='font-p'>Home</a>
-            {isLoggedIn?(
-              <a href="/user">transaction</a>
-            ):(
-              <a href="/register" className='font-p'>Register</a>
-            )}
-          </div>
-        )}
+      <div>
+        <ExpandableMenu/>
       </div>
       <div className='relative z-10 h-screen flex flex-col'>
         <div className='bg-white h-80 w-85 sm:h-5/12 md:h-6/12 sm:w-3/5 md:w-3/5 lg:w-1/2 xl:w-1/3 m-auto rounded-lg flex flex-col justify-center'>{/*caixa central*/}

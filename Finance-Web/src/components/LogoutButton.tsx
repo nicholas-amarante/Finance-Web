@@ -9,8 +9,6 @@ export default function LogoutButton(){
     }
 
     return(
-        <button onClick={handleLogout} className='bg-red-400'>
-            Sair
-        </button>
+        <a href="" onClick={handleLogout}>Sair</a>
     );
 }
