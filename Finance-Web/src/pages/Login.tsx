@@ -1,16 +1,16 @@
 import '../index.css'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import reactLogo from '../assets/react.svg';
-import viteLogo from '../../public/sf.svg';
 import { IoIosArrowForward } from "react-icons/io";
+import { useAuth } from '../hooks/useAuth';
 
 function Login() {
   const navigate=useNavigate();
   const [email, setEmail]=useState('');
   const [password, setPassword]=useState('');
   const [erro, setErro]=useState('');
-  const [isMenuOpen, setIsMenuOpen]=useState(false); 
+  const [isMenuOpen, setIsMenuOpen]=useState(false);
+  const isLoggedIn=useAuth(); 
 
   const toggleMenu=()=>{
     setIsMenuOpen(!isMenuOpen);
@@ -27,14 +27,14 @@ function Login() {
         body: JSON.stringify({email, password: password})
       });
       if(!response.ok){
-        throw new Error('login failed! Verifique suas credenciais.');
+        throw new Error('HTTP status not OK');
       }
       const data=await response.json();
       const token=data.token;
       localStorage.setItem('tokenJwt', token);
       navigate('/user');
     }catch(error){
-      setErro('Erro ao fazer ');
+      setErro('incorrect email or passowrd');
     }
   }
 
@@ -47,9 +47,13 @@ function Login() {
           <IoIosArrowForward className='IoIosArrowForward '/>
         </button>
         {isMenuOpen && (
-          <div className='bg-gray-200 flex flex-col mt-30 z-20'>
-            <a href="http://localhost:5173/">Home</a>
-            <a href="http://localhost:5173/register">Register</a>
+          <div className='bg-gray-200 flex flex-col mt-30 z-20 p-1 rounded-sm'>
+            <a href="/" className='font-p'>Home</a>
+            {isLoggedIn?(
+              <a href="/user">transaction</a>
+            ):(
+              <a href="/register" className='font-p'>Register</a>
+            )}
           </div>
         )}
       </div>

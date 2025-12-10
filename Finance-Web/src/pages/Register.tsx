@@ -61,9 +61,9 @@ function Register(){
                     <IoIosArrowForward className='IoIosArrowForward '/>
                 </button>
                 {isMenuOpen && (
-                    <div className='bg-gray-200 flex flex-col mt-30 z-20'>
-                        <a href="http://localhost:5173/">Home</a>
-                        <a href="http://localhost:5173/register">Register</a>
+                    <div className='bg-gray-200 flex flex-col mt-30 z-20 p-1 rounded-sm'>
+                        <a href="/" className='font-p'>Home</a>
+                        <a href="/login" className='font-p'>Login</a>
                     </div>
                 )}
             </div>

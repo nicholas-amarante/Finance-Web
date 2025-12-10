@@ -1,4 +1,5 @@
 import '../index.css'
+import LogoutButton from '../components/LogoutButton';
 
 function User(){
     
@@ -7,7 +8,7 @@ function User(){
             <div className='noise gradt h-screen w-screen'>
                 <div>
                     <div>
-                        
+                        <LogoutButton/>
                     </div>
                     <div>
 
