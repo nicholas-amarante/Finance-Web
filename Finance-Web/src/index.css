@@ -31,6 +31,9 @@
 .font-p{
     font-family: 'Jura', sans-serif; 
 }
+.shadow-box-custom{
+    box-shadow: 3px 3px 60px 0px rgba(0, 0, 0, 0.295);
+}
 
 @layer{
     .menu{

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ExpandableMenu from '../components/ExpandableMenu';
 import { Button } from '../components/Button';
+import { Logo } from '../components/Logo';
 
 function Register(){
     const navigate=useNavigate();
@@ -59,8 +60,11 @@ function Register(){
             <div className='absolute z-20'>
                 <ExpandableMenu/>
             </div>
+            <div>
+                <Logo/>
+            </div>
             <div className='relative z-10 flex h-screen w-screen'>
-                <div className='bg-white flex flex-col h-9/12 w-85 sm:w-7/12 lg:w-7/12 xl:w-5/10 m-auto rounded-3xl'>{/*central-box*/}
+                <div className='bg-white flex flex-col h-9/12 w-85 sm:w-7/12 lg:w-7/12 xl:w-5/10 m-auto rounded-3xl shadow-box-custom'>{/*central-box*/}
                     <div className='font-p text-3xl h-20 w-1/1 flex flex-col'>
                         <div className='m-auto'>
                             <p>Registrar</p>
