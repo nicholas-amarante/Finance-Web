@@ -1,67 +1,76 @@
-import '../App.css';
-import byteFoto from '../assets/byte.png';
+import "../App";
+import byteFoto from "../assets/byte.png";
 
-function Home(){
-    return(
+function Home() {
+  return (
     <>
-        <div className="bg-gradient-to-bl from-[#404658] to-[#8A96BE] h-screen w-screen
-        noise
-        ">
-            <div className="h-screen w-screen flex flex-col">
-                <div className="h-screen w-screen flex flex-col">
-                    <div className="mt-2.5 flex justify-end">
-                        <p className="
-                        font-p
-                        bg-gray-500
-                        hover:bg-gray-700
-                        hover:text-white
-                        mr-4
-                        pt-1 pb-1 pl-3 pr-3
-                        rounded-full
-                        ">
-                            <a href="/login">Sign in</a>
-                        </p>
-                        <p className="
-                        font-p
-                        text-white
-                        bg-gray-800
-                        hover:bg-gray-900
-                        ml-4 mr-4
-                        pt-1 pb-1 pl-3 pr-3
-                        rounded-full
-                        ">
-                        <a href="/register">Sign up</a>
-                        </p>
-                    </div>
-                    <div className='h-12/12 w-12/12 rounded-xl flex flex-col md:flex-row items-center justify-center'>
-                        <div className='bg-gray-600 w-3/10 h-4/10 m-5 p-3 rounded-3xl'>
-                            <p className='text-white'>
-                                O que é a Byte Finance?
-                            </p>
-                            <p className='text-white'>
-                                A Byte Finance é a sua nova ferramenta digital para o controle e gestão das suas finanças pessoais.
-                            </p>
-                        </div>
-                        <div className='bg-gray-600 w-3/10 h-4/10 m-5 p-3 rounded-3xl'>
-                            <p className='text-white'>
-                                Como a Byte Finance te ajuda?
-                            </p>
-                            <p className='text-white'>
-                                Ele te ajuda a transformar seus hábitos financeiros. Chega de surpresas no final do mês! Com ele, você registra seus gastos rapidamente, ajudando você a planejar, economizar e alcançar seus objetivos financeiros.
-                            </p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src={byteFoto} alt="" className="relative z-10 h-80"/>
-                    </div>
-                </div>
-                <div>
+      <div className="gradt h-screen w-screen noise relative overflow-hidden">
+        <div className="absolute top-6 right-8 flex gap-4 z-20">
+          <a
+            href="/login"
+            className="font-p bg-white/70 backdrop-blur-md 
+            hover:bg-white text-gray-800 
+            px-6 py-2 rounded-full transition"
+          >
+            Entrar
+          </a>
 
-                </div>
-            </div>
+          <a
+            href="/register"
+            className="font-p bg-gray-700/70 backdrop-blur-md 
+            hover:bg-gray-900 text-white 
+            px-6 py-2 rounded-full transition"
+          >
+            Registrar
+          </a>
         </div>
+
+        <div className="h-full w-full flex items-center justify-center px-10">
+          <div className="flex flex-col md:flex-row items-center gap-20 relative">
+            <div
+              className="shadow-box-custom
+              bg-white/10 backdrop-blur-lg
+              text-white font-p
+              max-w-md p-8 rounded-3xl"
+            >
+              <h2 className="text-lg mb-4">
+                O que é a <span className="font-semibold">Byte Finance?</span>
+              </h2>
+
+              <p className="text-sm leading-relaxed text-gray-200">
+                A <strong>Byte Finance</strong> é a sua nova ferramenta digital
+                para o controle e gestão das suas finanças pessoais.
+              </p>
+            </div>
+
+            <div
+              className="top-30
+              relative shadow-box-custom
+              bg-white/10 backdrop-blur-lg
+              text-white font-p
+              max-w-md p-8 rounded-3xl"
+            >
+              <h2 className="text-lg mb-4">Como a Byte Finance te ajuda?</h2>
+
+              <p className="text-sm leading-relaxed text-gray-200">
+                Ele te ajuda a transformar seus hábitos financeiros. Chega de
+                surpresas no final do mês! Com ele, você registra seus gastos
+                rapidamente, ajudando você a planejar, economizar e alcançar
+                seus objetivos financeiros.
+              </p>
+
+              <img
+                src={byteFoto}
+                alt="Byte Finance App"
+                className="absolute -top-60 left-1/3 -translate-x-1/2 
+                h-80 drop-shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </>
-    )
+  );
 }
 
 export default Home;
