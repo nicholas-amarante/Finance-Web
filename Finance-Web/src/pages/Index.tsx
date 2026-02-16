@@ -1,18 +1,19 @@
+import { useNavigate } from "react-router-dom";
 import "../App";
 import byteFoto from "../assets/byte.png";
 
 function Home() {
+  const navigate = useNavigate();
   return (
     <>
       <div className="gradt h-screen w-screen noise relative overflow-hidden">
         <div className="absolute top-6 right-8 flex gap-4 z-20">
-          <a href="/login" className="font-p bg-white/70 backdrop-blur-md hover:bg-white text-gray-800 px-6 py-2 rounded-full transition">
+          <button onClick={() => navigate("/login")} className="font-p bg-white/70 backdrop-blur-md hover:bg-white hover:scale-110 text-gray-800 px-6 py-2 rounded-full transition">
             Entrar
-          </a>
-
-          <a href="/register" className="font-p bg-gray-700/70 backdrop-blur-md hover:bg-gray-900 text-white px-6 py-2 rounded-full transition">
-            Registrar
-          </a>
+          </button>
+          <button onClick={() => navigate("/register")} className="font-p bg-gray-700/70 backdrop-blur-md hover:bg-gray-900 hover:scale-110 text-white px-6 py-2 rounded-full transition">
+            Register
+          </button>
         </div>
 
         <div className="h-full w-full flex items-center justify-center px-10">
