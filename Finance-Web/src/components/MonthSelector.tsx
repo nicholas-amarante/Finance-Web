@@ -27,7 +27,7 @@ export function MonthSelector({selectedMonth, onMonthChange}:MonthSelectorProps)
             </button>
             {isOpen&&(
                 <div className="absolute transition-transform transform-200 right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-y-auto">
-                    <div className="py-1">
+                    <div className="py-1 ">
                         {months.map((months)=>(
                             <button key={months} onClick={()=>handleSelect(months)} className={`block w-full px-4 py-2 text-left text-sm hover:bg-blue-50 hover:text-blue-700 ${selectedMonth===months?"bg-blue-100 text-blue-800 font-bold":"text-gray-700"}`}>
                                 {months}

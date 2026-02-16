@@ -5,6 +5,7 @@ import {MonthSelector} from '../components/MonthSelector';
 import { useEffect, useState } from 'react';
 import { YearSelector } from '../components/YearSelector';
 import { Button } from '../components/Button';
+import { Link } from 'react-router-dom';
 
 interface DashboardData{
         totalIncome:number;
@@ -68,30 +69,37 @@ function Menu(){
                 <div className='w-screen h-screen flex items-end justify-center'>
                     <div className='bg-white w-11/12 h-10/12 p-10 rounded-tl-3xl z-10 rounded-tr-3xl flex flex-row'>{/*caixa central */}
                         <div className='z-30 flex flex-col pr-4'>
-                            <div className='flex flex-row mb-5'>
-                                <p className='mr-2'>Mês: </p>
-                                <div className=''>
+                            <div className='flex flex-row mb-10'>
+                                <p className='mr-3'>Mês: </p>
+                                <div className='-mt-1.5'>
                                     <MonthSelector selectedMonth={mesSelecionado} onMonthChange={setMesSelecionado}/>
                                 </div>
                             </div>
                             <div className='flex flex-row'>
-                                <p className='mr-2'>Ano: </p>
-                                <div className=''>
+                                <p className='mr-3'>Ano: </p>
+                                <div className='-mt-1.5'>
                                     <YearSelector selectedYear={anoSelecionado} onYearChange={setAnoSelecionado} />
                                 </div>
                             </div>
                         </div>
-                        <div className='pr-4'>
-                            <p>Saldo: {formatarMoeda(dashboard.balance)}</p>
+                        <div className='pr-4 ml-7 mr-7'>
+                            <Link to="">
+                                <p>Saldo: {formatarMoeda(dashboard.balance)}</p>
+                            </Link>
                         </div>
-                        <div className='pr-4'>
-                            <p>Receitas: {formatarMoeda(dashboard.totalIncome)}</p>
+                        <div className='pr-4 ml-7 mr-7'>
+                            <Link to="">
+                                <p>Receita: {formatarMoeda(dashboard.totalIncome)}</p>
+                            </Link>
                         </div>
-                        <div className='pr-4'>
-                            <p>Despesas: {formatarMoeda(dashboard.totalExpense)}</p>
+                        <div className='pr-4 ml-7 mr-7'>
+                            <Link to="">
+                                <p>Despesas: {formatarMoeda(dashboard.totalExpense)}</p>
+                            </Link>
                         </div>
-                        <div className='ml-auto'>
-                            <Button className='w-30 hover:w-33 p-2' to='/transaction'>ADICIONAR</Button>
+                        <div className='ml-auto flex flex-col w-30'>
+                            <Button className='w-30 hover:w-33 p-2 mb-7' to='/transaction'>ADICIONAR</Button>
+                            <Button className='w-30 hover:w-35 p-2'>TRANSAÇÕES</Button>
                         </div>
                     </div>
                 </div>
