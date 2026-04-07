@@ -98,8 +98,12 @@ function Menu(){
                             </Link>
                         </div>
                         <div className='ml-auto flex flex-col w-30'>
-                            <Button className='w-30 hover:w-33 p-2 mb-7' to='/transaction'>ADICIONAR</Button>
-                            <Button className='w-30 hover:w-35 p-2'>TRANSAÇÕES</Button>
+                            <div>
+                                <Button className='w-30 p-2 mb-7' to='/transaction'>ADICIONAR</Button>
+                            </div>
+                            <div>
+                                <Button className='w-30 p-2'>TRANSAÇÕES</Button>
+                            </div>
                         </div>
                     </div>
                 </div>
