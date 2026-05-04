@@ -32,7 +32,7 @@ export function Navbar(){
                             <img src={profile} alt="" className='h-7 flex '/>
                         </button>
                         {isMenuOpen&&(
-                            <div className='absolute bg-gray-200 w-25 font-p flex flex-col mt-17 ml-5 z-20 p-1 rounded-sm'>
+                            <div className='absolute bg-gray-200 w-20 font-p flex flex-col mt-14 -left-8 items-end z-20 p-2 rounded-sm'>
                                 <Link to={''}>Perfil</Link>
                                 <Link to={'/menu'}>Menu</Link>
                                 <button onClick={handleLogout}>Sair</button>

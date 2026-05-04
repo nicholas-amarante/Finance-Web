@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { YearSelector } from '../components/YearSelector';
 import { Button } from '../components/Button';
 import { Link } from 'react-router-dom';
+import { ChartDonut } from '../components/ChartDonut';
 
 interface DashboardData{
         totalIncome:number;
@@ -67,42 +68,58 @@ function Menu(){
                     <Logo/>
                 </div>
                 <div className='w-screen h-screen flex items-end justify-center'>
-                    <div className='bg-white w-11/12 h-10/12 p-10 rounded-tl-3xl z-10 rounded-tr-3xl flex flex-row'>{/*caixa central */}
-                        <div className='z-30 flex flex-col pr-4'>
-                            <div className='flex flex-row mb-10'>
-                                <p className='mr-3'>Mês: </p>
-                                <div className='-mt-1.5'>
-                                    <MonthSelector selectedMonth={mesSelecionado} onMonthChange={setMesSelecionado}/>
+
+                    <div className='bg-white w-11/12 h-10/12 p-10 rounded-tl-3xl z-10 rounded-tr-3xl flex flex-col'>{/*caixa central */}
+                        <div className='z-30 flex flex-row items-center justify-between mb-10'>{/*primeira linha*/}
+
+                            <div className='flex gap-6'>{/*seletor*/}
+                                <div className='flex flex-row'>
+                                    <p className='mr-3'>Mês: </p>
+                                    <div className='-mt-1.5'>
+                                        <MonthSelector selectedMonth={mesSelecionado} onMonthChange={setMesSelecionado}/>
+                                    </div>
+                                </div>
+                                <div className='flex flex-row'>
+                                    <p className='mr-3'>Ano: </p>
+                                    <div className='-mt-1.5'>
+                                        <YearSelector selectedYear={anoSelecionado} onYearChange={setAnoSelecionado} />
+                                    </div>
                                 </div>
                             </div>
-                            <div className='flex flex-row'>
-                                <p className='mr-3'>Ano: </p>
-                                <div className='-mt-1.5'>
-                                    <YearSelector selectedYear={anoSelecionado} onYearChange={setAnoSelecionado} />
+
+                            <div className='flex gap-8 items-center m-auto bg-gray-50 px-6 py-2 rounded-xl '>
+                                <Link to="">
+                                    <p>Saldo: {formatarMoeda(dashboard.balance)}</p>
+                                </Link>
+                                <Link to="">
+                                    <p>Receita: {formatarMoeda(dashboard.totalIncome)}</p>
+                                </Link>
+                                <Link to="">
+                                    <p>Despesas: {formatarMoeda(dashboard.totalExpense)}</p>
+                                </Link>
+                            </div>
+
+                            <div className='m-auto gap-8 flex'>{/*botoes*/}
+                                <div>
+                                    <Button className='w-30 p-2' to='/transaction'>ADICIONAR</Button>
+                                </div>
+                                <div>
+                                    <Button className='w-30 p-2'>TRANSAÇÕES</Button>
                                 </div>
                             </div>
                         </div>
-                        <div className='pr-4 ml-7 mr-7'>
-                            <Link to="">
-                                <p>Saldo: {formatarMoeda(dashboard.balance)}</p>
-                            </Link>
-                        </div>
-                        <div className='pr-4 ml-7 mr-7'>
-                            <Link to="">
-                                <p>Receita: {formatarMoeda(dashboard.totalIncome)}</p>
-                            </Link>
-                        </div>
-                        <div className='pr-4 ml-7 mr-7'>
-                            <Link to="">
-                                <p>Despesas: {formatarMoeda(dashboard.totalExpense)}</p>
-                            </Link>
-                        </div>
-                        <div className='ml-auto flex flex-col w-30'>
-                            <div>
-                                <Button className='w-30 p-2 mb-7' to='/transaction'>ADICIONAR</Button>
+
+                        <div className='flex flex-row gap-8 flex-1 min-h-0'>
+
+                            <div className='flex-[1] bg-gray-50 rounded-2xl p-6 flex flex-col items-center justify-center border border-gray-100'>
+                                <h3 className='text-gray-700 font-bold mb-4 self-start'>Distribuição de Gastos</h3>
+                                <div className='w-full h-full flex items-center justify-center '>
+                                    <ChartDonut />
+                                </div>
                             </div>
-                            <div>
-                                <Button className='w-30 p-2'>TRANSAÇÕES</Button>
+
+                            <div className='flex-[1.5] flex flex-col'>
+
                             </div>
                         </div>
                     </div>
