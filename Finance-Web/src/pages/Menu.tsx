@@ -60,19 +60,18 @@ function Menu(){
     
     return(
         <>
-            <div className='noise gradt h-screen w-screen'>
+            <div className='noise gradt min-h-screen w-full overflow-x-hidden'>
                 <div className='absolute z-20'>
                     <ExpandableMenu/>
                 </div>
                 <div>
                     <Logo/>
                 </div>
-                <div className='w-screen h-screen flex items-end justify-center'>
+                <div className='w-full min-h-screen flex items-end justify-center px-2 sm:px-4'>
+                    <div className='bg-white w-full max-w-[1400px] min-h-[85vh] p-4 md:p-10 rounded-tl-3xl rounded-tr-3xl z-10 flex flex-col'>{/*caixa central */}
+                        <div className='z-30 flex flex-col lg:flex-row gap-6 lg:items-center lg:justify-between mb-10'>{/*primeira linha*/}
 
-                    <div className='bg-white w-11/12 h-10/12 p-10 rounded-tl-3xl z-10 rounded-tr-3xl flex flex-col'>{/*caixa central */}
-                        <div className='z-30 flex flex-row items-center justify-between mb-10'>{/*primeira linha*/}
-
-                            <div className='flex gap-6'>{/*seletor*/}
+                            <div className='flex flex-col sm:flex-row gap-4 sm:gap-6'>{/*seletor*/}
                                 <div className='flex flex-row'>
                                     <p className='mr-3'>Mês: </p>
                                     <div className='-mt-1.5'>
@@ -87,7 +86,7 @@ function Menu(){
                                 </div>
                             </div>
 
-                            <div className='flex gap-8 items-center m-auto bg-gray-50 px-6 py-2 rounded-xl '>
+                            <div className='flex flex-col sm:flex-row gap-3 sm:gap-6 items-start sm:items-center bg-gray-50 px-4 py-3 rounded-xl w-full lg:w-auto'>
                                 <Link to="">
                                     <p>Saldo: {formatarMoeda(dashboard.balance)}</p>
                                 </Link>
@@ -99,17 +98,16 @@ function Menu(){
                                 </Link>
                             </div>
 
-                            <div className='m-auto gap-8 flex'>{/*botoes*/}
+                            <div className='flex flex-col sm:flex-row gap-4 w-full lg:w-auto'>{/*botoes*/}
                                 <div>
-                                    <Button className='w-30 p-2' to='/transaction'>ADICIONAR</Button>
+                                    <Button className='w-full sm:w-30 p-2' to='/transaction'>ADICIONAR</Button>
                                 </div>
                                 <div>
-                                    <Button className='w-30 p-2'>TRANSAÇÕES</Button>
+                                    <Button className='w-full sm:w-30 p-2' to='/transaction'>TRANSAÇÕES</Button>
                                 </div>
                             </div>
                         </div>
-
-                        <div className='flex flex-row gap-8 flex-1 min-h-0'>
+                        <div className='flex flex-col xl:flex-row gap-6 flex-1 min-h-0'> {/*celular - empilha / desktop - lado a lado*/}
 
                             <div className='flex-[1] bg-gray-50 rounded-2xl p-6 flex flex-col items-center justify-center border border-gray-100'>
                                 <h3 className='text-gray-700 font-bold mb-4 self-start'>Distribuição de Gastos</h3>
