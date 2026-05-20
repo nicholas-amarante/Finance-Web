@@ -8,14 +8,20 @@ import { Button } from '../components/Button';
 import { Link } from 'react-router-dom';
 import { ChartDonut } from '../components/ChartDonut';
 
+interface CategoryExpense{
+    categoryName: string;
+    totalAmount: number;
+}
+
 interface DashboardData{
         totalIncome:number;
         totalExpense:number;
         balance:number;
+        expenseByCategory?: CategoryExpense[];
     }
 
 function Menu(){
-    const [dashboard, setDashboard]=useState<DashboardData>({balance:0, totalIncome:0, totalExpense:0});
+    const [dashboard, setDashboard]=useState<DashboardData>({balance:0, totalIncome:0, totalExpense:0, expenseByCategory:[]});
     const [mesSelecionado, setMesSelecionado]=useState('Janeiro');
     const [anoSelecionado, setAnoSelecionado]=useState(new Date().getFullYear());
 
@@ -27,22 +33,31 @@ function Menu(){
                 "Setembro": 9, "Outubro": 10, "Novembro": 11, "Dezembro": 12
             }
             const mesNumero=mesesMap[mesSelecionado] || 1;
+
             try{
-                const token=localStorage.getItem('tokenJwt');
-                const url=`http://localhost:8080/api/dashboard?month=${mesNumero}&year=${anoSelecionado}`;
-                const response=await fetch(url, {//envia as informacoes de acesso
-                    method: 'GET',
-                    headers:{
-                        'Content-Type':'application/json',
-                        'Authorization':`Bearer ${token}`
-                    }
-                });
-                if(response.ok){
-                    const dadosDoBack=await response.json();
-                    console.log(dadosDoBack);
-                    setDashboard(dadosDoBack);
+                const token = localStorage.getItem('tokenJwt');
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            };
+                const url=`http://localhost:8080/api/dashboard/by-monthly?month=${mesNumero}&year=${anoSelecionado}`;
+                const urlCategorias = `http://localhost:8080/api/dashboard/by-category?month=${mesNumero}&year=${anoSelecionado}`;
+                const [responseResumo, responseCategorias]=await Promise.all([
+                    fetch(url, {method: 'GET', headers}),
+                    fetch(urlCategorias, {method: 'GET', headers})
+                ]) ;
+                if(responseResumo.ok && responseCategorias.ok){
+                    const dadosResumo=await responseResumo.json();
+                    const dadosCategorias=await responseCategorias.json();
+                    setDashboard({
+                        balance: dadosResumo.balance,
+                        totalIncome: dadosResumo.totalIncome,
+                        totalExpense: dadosResumo.totalExpense,
+                        expenseByCategory: dadosCategorias
+                    });
+
                 }else{
-                    console.error("Erro ao buscar as informacoes", response.status);
+                    console.error("Erro ao buscar as informacoes", responseResumo.status);
                 }
             }catch(erro){
                 console.error("Erro de conexao", erro);
@@ -51,12 +66,18 @@ function Menu(){
         carregarDados();
     }, [mesSelecionado, anoSelecionado]);//executa novamente caso o mes seja alterado
 
+
         const formatarMoeda=(valor:number)=>{
             return new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
                 currency: 'BRL'
             }).format(valor);
         };
+
+        const dadosGrafico=dashboard.expenseByCategory?.map(item=>({
+            name: item.categoryName,
+            value: Number(item.totalAmount)
+        }))||[];
     
     return(
         <>
@@ -112,7 +133,7 @@ function Menu(){
                             <div className='flex-[1] bg-gray-50 rounded-2xl p-6 flex flex-col items-center justify-center border border-gray-100'>
                                 <h3 className='text-gray-700 font-bold mb-4 self-start'>Distribuição de Gastos</h3>
                                 <div className='w-full h-full flex items-center justify-center '>
-                                    <ChartDonut />
+                                    <ChartDonut data={dadosGrafico }/>
                                 </div>
                             </div>
 
