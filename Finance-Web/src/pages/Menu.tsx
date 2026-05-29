@@ -20,19 +20,24 @@ interface DashboardData{
         expenseByCategory?: CategoryExpense[];
     }
 
+    
 function Menu(){
+    const mesesMap:{[key:string]:number}={
+        "Janeiro": 1, "Fevereiro": 2, "Março": 3, "Abril": 4,
+        "Maio": 5, "Junho": 6, "Julho": 7, "Agosto": 8,
+        "Setembro": 9, "Outubro": 10, "Novembro": 11, "Dezembro": 12
+    }
+    const nomesMeses = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+];
     const [dashboard, setDashboard]=useState<DashboardData>({balance:0, totalIncome:0, totalExpense:0, expenseByCategory:[]});
-    const [mesSelecionado, setMesSelecionado]=useState('Janeiro');
+    const [mesSelecionado, setMesSelecionado]=useState<string>(nomesMeses[new Date().getMonth()]);
     const [anoSelecionado, setAnoSelecionado]=useState(new Date().getFullYear());
-
+    
     useEffect(()=>{
         const carregarDados=async()=>{
-            const mesesMap:{[key:string]:number}={
-                "Janeiro": 1, "Fevereiro": 2, "Março": 3, "Abril": 4,
-                "Maio": 5, "Junho": 6, "Julho": 7, "Agosto": 8,
-                "Setembro": 9, "Outubro": 10, "Novembro": 11, "Dezembro": 12
-            }
-            const mesNumero=mesesMap[mesSelecionado] || 1;
+            const mesNumero=mesesMap[mesSelecionado] || mesesMap[new Date().getMonth()]
 
             try{
                 const token = localStorage.getItem('tokenJwt');
@@ -138,7 +143,21 @@ function Menu(){
                             </div>
 
                             <div className='flex-[1.5] flex flex-col'>
-
+                                <h3 className='text-gray-700 font-bold mb-4'>Últimas Transações</h3>
+                                <div className='overflow-y-auto pr-2 space-y-3'>
+                                    {[1, 2, 3, 4, 5].map((item) => (
+                                        <div key={item} className='flex justify-between items-center p-4 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow'>
+                                            <div className='flex items-center gap-4'>
+                                                <div className='w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600'>💰</div>
+                                                <div>
+                                                    <p className='font-semibold text-gray-800'>Exemplo de Transação {item}</p>
+                                                    <p className='text-xs text-gray-400'>12 Mai 2026 • Alimentação</p>
+                                                </div>
+                                            </div>
+                                            <p className='font-bold text-red-500'>- R$ 50,00</p>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
