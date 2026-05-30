@@ -121,7 +121,7 @@ function CreateTransaction(){
     return(
         <>
             <div className='noise gradt w-screen h-screen'>
-                <div>
+                <div className='absolute z-20'>
                     <ExpandableMenu/>
                 </div>
                 <div>

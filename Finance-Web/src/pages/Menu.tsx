@@ -13,11 +13,22 @@ interface CategoryExpense{
     totalAmount: number;
 }
 
+interface Transaction{
+    id:number,
+    name:string,
+    description:string,
+    value:number,
+    categoryName:string,
+    transactionType:'INCOME' | 'EXPENSE',
+    dateTime:string
+}
+
 interface DashboardData{
         totalIncome:number;
         totalExpense:number;
         balance:number;
         expenseByCategory?: CategoryExpense[];
+        latestTransactions?: Transaction[];
     }
 
     
@@ -31,7 +42,7 @@ function Menu(){
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
     "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
 ];
-    const [dashboard, setDashboard]=useState<DashboardData>({balance:0, totalIncome:0, totalExpense:0, expenseByCategory:[]});
+    const [dashboard, setDashboard]=useState<DashboardData>({balance:0, totalIncome:0, totalExpense:0, expenseByCategory:[], latestTransactions:[]});
     const [mesSelecionado, setMesSelecionado]=useState<string>(nomesMeses[new Date().getMonth()]);
     const [anoSelecionado, setAnoSelecionado]=useState(new Date().getFullYear());
     
@@ -47,18 +58,22 @@ function Menu(){
             };
                 const url=`http://localhost:8080/api/dashboard/by-monthly?month=${mesNumero}&year=${anoSelecionado}`;
                 const urlCategorias = `http://localhost:8080/api/dashboard/by-category?month=${mesNumero}&year=${anoSelecionado}`;
-                const [responseResumo, responseCategorias]=await Promise.all([
+                const urlTransactions=`http://localhost:8080/api/dashboard/ten-last`;
+                const [responseResumo, responseCategorias, responseTransactions]=await Promise.all([
                     fetch(url, {method: 'GET', headers}),
-                    fetch(urlCategorias, {method: 'GET', headers})
+                    fetch(urlCategorias, {method: 'GET', headers}),
+                    fetch(urlTransactions, {method: 'GET', headers})
                 ]) ;
-                if(responseResumo.ok && responseCategorias.ok){
+                if(responseResumo.ok && responseCategorias.ok && responseTransactions.ok){
                     const dadosResumo=await responseResumo.json();
                     const dadosCategorias=await responseCategorias.json();
+                    const dadosTransactions=await responseTransactions.json();
                     setDashboard({
                         balance: dadosResumo.balance,
                         totalIncome: dadosResumo.totalIncome,
                         totalExpense: dadosResumo.totalExpense,
-                        expenseByCategory: dadosCategorias
+                        expenseByCategory: dadosCategorias,
+                        latestTransactions: Array.isArray(dadosTransactions) ? dadosTransactions.slice(0, 5) : []
                     });
 
                 }else{
@@ -77,6 +92,14 @@ function Menu(){
                 style: 'currency',
                 currency: 'BRL'
             }).format(valor);
+        };
+
+        const formatarData = (dataStr: string) => {
+            return new Intl.DateTimeFormat('pt-BR', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            }).format(new Date(dataStr));
         };
 
         const dadosGrafico=dashboard.expenseByCategory?.map(item=>({
@@ -145,18 +168,28 @@ function Menu(){
                             <div className='flex-[1.5] flex flex-col'>
                                 <h3 className='text-gray-700 font-bold mb-4'>Últimas Transações</h3>
                                 <div className='overflow-y-auto pr-2 space-y-3'>
-                                    {[1, 2, 3, 4, 5].map((item) => (
-                                        <div key={item} className='flex justify-between items-center p-4 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow'>
-                                            <div className='flex items-center gap-4'>
-                                                <div className='w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600'>💰</div>
-                                                <div>
-                                                    <p className='font-semibold text-gray-800'>Exemplo de Transação {item}</p>
-                                                    <p className='text-xs text-gray-400'>12 Mai 2026 • Alimentação</p>
+                                    {dashboard.latestTransactions && dashboard.latestTransactions.length > 0?(
+                                        dashboard.latestTransactions.map((transaction)=>(
+                                            <div key={transaction.id} className='flex justify-between items-center p-4 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow'>
+                                                <div className='flex items-center gap-4'>
+                                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${transaction.transactionType === 'INCOME' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                                                        {transaction.transactionType === 'INCOME' ? '➕' : '➖'}
+                                                    </div>
+                                                    <div>
+                                                        <p className='font-semibold text-gray-800'>{transaction.name}</p>
+                                                        <p className='text-xs text-gray-400'>{formatarData(transaction.dateTime)} • {transaction.categoryName}</p>
+                                                    </div>
                                                 </div>
+
+                                                <p className={`font-bold ${transaction.transactionType === 'INCOME' ? 'text-green-500' : 'text-red-500'}`}>
+                                                    {transaction.transactionType === 'INCOME' ? '+' : '-'} {formatarMoeda(transaction.value)}
+                                                </p>
+
                                             </div>
-                                            <p className='font-bold text-red-500'>- R$ 50,00</p>
-                                        </div>
-                                    ))}
+                                        )
+                                    )):(
+                                        <p className="text-gray-400 text-center py-10">Nenhuma transação encontrada.</p>
+                                    )}
                                 </div>
                             </div>
                         </div>

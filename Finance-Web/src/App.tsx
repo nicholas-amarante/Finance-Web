@@ -4,6 +4,7 @@ import Index from './pages/Index';
 import Register from './pages/Register';
 import Menu from './pages/Menu';
 import CreateTransaction from './pages/CreateTransaction';
+import Profile from './pages/Profile';
 import PrivateRoute from './components/PrivateRoute';
 
 function App(){
@@ -15,6 +16,7 @@ function App(){
 
             <Route path='/menu' element={<Menu/>} />
             <Route path='/transaction' element={<CreateTransaction/>}/>
+            <Route path='/profile' element={<Profile/>}/>
             <Route element={<PrivateRoute/>}>
             </Route>
         </Routes>
