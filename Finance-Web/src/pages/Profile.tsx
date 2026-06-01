@@ -1,24 +1,46 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiEdit2, FiLock } from 'react-icons/fi';
 import '../index.css';
 import ExpandableMenu from '../components/ExpandableMenu';
 import { Logo } from '../components/Logo';
 
-type ProfileData = {
+interface ProfileData{
     name: string;
     email: string;
     cpf: string;
-    birthDate: string;
+    birthday: string;
 };
 
 type EditableField = keyof ProfileData;
 
 function Profile(){
+
+    useEffect(() => {
+        const loadData=async()=>{
+            try{
+                const token=localStorage.getItem('tokenJwt');
+                const headers={
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                };
+                const [responseProfile]=await Promise.all([
+                    fetch('http://localhost:8080/api/users/profile', {method:'GET', headers})
+                ]);
+                if(responseProfile.ok){
+                    const dataProfile:ProfileData=await responseProfile.json();
+                    setProfile(dataProfile);
+                }
+            }catch(error){
+                console.error("Erro ao enviar", error);
+            }
+        };
+        loadData();}, []);
+
     const [profile, setProfile] = useState<ProfileData>({
-        name: 'Sasak Chan',
-        email: 'sasak@email.com',
-        cpf: '123.456.789-00',
-        birthDate: '2000-01-01',
+        name: '',
+        email: '',
+        cpf: '',
+        birthday: '',
     });
     const [editingField, setEditingField] = useState<EditableField | null>(null);
     const [passwordMessage, setPasswordMessage] = useState('');
@@ -44,6 +66,26 @@ function Profile(){
         }));
     };
 
+    const saveFieldChanges=async(field: EditableField)=>{
+        if(field=='cpf') return;
+        try{
+            const token=localStorage.getItem('tokenJwt');
+            const response=await fetch('http://localhost:8080/api/users/profile', {
+                method: 'PUT',
+                headers:{
+                    'Authorization':`Bearer ${token}`,
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(profile)
+            });
+            if(!response.ok){
+                console.error("Erro ao salvar o campo: ", field);
+            }
+        }catch(error){
+            console.error("Erro de conexão ao salvar o campo: ", error);
+        }
+    };
+
     const handlePasswordClick = () => {
         setPasswordMessage('Solicitacao de alteracao de senha iniciada.');
     };
@@ -60,7 +102,7 @@ function Profile(){
         { id: 'name', label: 'Nome', type: 'text' },
         { id: 'email', label: 'Email', type: 'email' },
         { id: 'cpf', label: 'CPF', type: 'text' },
-        { id: 'birthDate', label: 'Nascimento', type: 'date' },
+        { id: 'birthday', label: 'Nascimento', type: 'date' },
     ];
 
     return(
@@ -101,20 +143,39 @@ function Profile(){
                                                 <input
                                                     type={field.type}
                                                     value={profile[field.id]}
-                                                    readOnly={!isEditing}
+                                                    readOnly={!isEditing || field.id==='cpf'}
                                                     onChange={(event) => handleProfileChange(field.id, event.target.value)}
-                                                    onBlur={() => setEditingField(null)}
-                                                    className='h-10 w-full rounded-md bg-gray-300 px-3 pr-10 text-base text-black transition-all duration-300 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-black/30'
+                                                    onBlur={() => { 
+                                                        if(isEditing){
+                                                        saveFieldChanges(field.id);
+                                                        setEditingField(null);
+                                                        }
+                                                    }}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            saveFieldChanges(field.id);
+                                                            setEditingField(null);
+                                                        }
+                                                    }}
+                                                    className={`h-10 w-full rounded-md px-3 pr-10 text-base text-black transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-black/30 ${
+                                                        field.id === 'cpf' 
+                                                        ? 'bg-gray-200 cursor-not-allowed opacity-60'
+                                                        : isEditing ? 'bg-white ring-2 ring-blue-500' : 'bg-gray-300'
+                                                    }`}
                                                 />
-                                                <button
-                                                    type='button'
-                                                    aria-label={`Editar ${field.label}`}
-                                                    onMouseDown={(event) => event.preventDefault()}
-                                                    onClick={() => setEditingField(field.id)}
-                                                    className='absolute right-3 top-1/2 -translate-y-1/2 text-black transition-colors hover:text-gray-600'
-                                                >
-                                                    <FiEdit2 size={18} />
-                                                </button>
+                                                {field.id!=='cpf'&&(
+                                                    <button
+                                                        type='button'
+                                                        aria-label={`Editar ${field.label}`}
+                                                        onMouseDown={(event) => event.preventDefault()}
+                                                        onClick={() => setEditingField(field.id)}
+                                                        className='absolute right-3 top-1/2 -translate-y-1/2 text-black transition-colors hover:text-gray-600'
+                                                    >
+                                                        <FiEdit2 size={18} />
+                                                    </button>
+                                                )}
+                                                
                                             </div>
                                         </label>
                                     );
