@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import "../App";
 import byteFoto from "../assets/byte.png";
 import { Navbar } from "../components/Navbar";
+import ExpandableMenu from "../components/ExpandableMenu";
+import { Logo } from "../components/Logo";
 
 function Home() {
   const navigate = useNavigate();
@@ -10,6 +12,12 @@ function Home() {
       <div className="gradt h-screen w-screen noise relative overflow-hidden">
         <div className="">
           <Navbar/>
+        </div>
+        <div>
+          <ExpandableMenu/>
+        </div>
+        <div>
+          <Logo/>
         </div>
 
         <div className="h-full w-full flex items-center justify-center px-10">

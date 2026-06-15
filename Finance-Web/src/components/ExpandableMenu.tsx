@@ -2,7 +2,6 @@ import { IoIosArrowForward } from "react-icons/io";
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import LogoutButton from "./LogoutButton";
 
 export default function ExpandableMenu() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,26 +20,52 @@ export default function ExpandableMenu() {
             </button>
             {isMenuOpen && (
                 <div className="bg-gray-200 w-25 font-p flex flex-col mt-17 ml-5 z-20 p-1 rounded-sm">
-                    <Link to="/">home</Link>
 
                     {currentPath === '/login' && !isLoggedIn && (
-                        <Link to="/register">register</Link>
+                        <>
+                            <Link to="/">Inicio</Link>
+                            <Link to="/register">Registrar</Link>
+                        </>
                     )}
 
                     {currentPath === '/register' && !isLoggedIn && (
-                        <Link to="/login">login</Link>
+                        <>
+                            <Link to="/">Inicio</Link>
+                            <Link to="/login">Entrar</Link>
+                        </>
                     )}
 
-                    {isLoggedIn && currentPath !== '/menu' && (
-                        <Link to="/menu">menu</Link>
+                    {!isLoggedIn && currentPath==='/' && (
+                        <>
+                            <Link to="/login">Entrar</Link>
+                            <Link to="/register">Registrar</Link>
+                        </>
                     )}
 
-                    {isLoggedIn && currentPath !== '/profile' && (
-                        <Link to="/profile">perfil</Link>
+                    {isLoggedIn && currentPath==='/' && (
+                        <>
+                            <Link to="/menu">Menu</Link>
+                        </>
                     )}
 
-                    {isLoggedIn && (
-                        <LogoutButton />
+                    {isLoggedIn && currentPath == '/menu' && (
+                        <>
+                            <Link to="/">Inicio</Link>
+                        </>
+                    )}
+
+                    {isLoggedIn && currentPath == '/profile' && (
+                        <>
+                            <Link to="/">Inicio</Link>
+                            <Link to="/menu">Menu</Link>
+                        </>
+                    )}
+
+                    {isLoggedIn && currentPath == '/transactions' && (
+                        <>
+                            <Link to="/">Inicio</Link>
+                            <Link to="/menu">Menu</Link>
+                        </>
                     )}
                 </div>
             )}

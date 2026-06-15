@@ -6,6 +6,7 @@ import Menu from './pages/Menu';
 import CreateTransaction from './pages/CreateTransaction';
 import Profile from './pages/Profile';
 import PrivateRoute from './components/PrivateRoute';
+import Transactions from './pages/Transactions';
 
 function App(){
     return(
@@ -17,6 +18,8 @@ function App(){
             <Route path='/menu' element={<Menu/>} />
             <Route path='/transaction' element={<CreateTransaction/>}/>
             <Route path='/profile' element={<Profile/>}/>
+            <Route path='/transactions' element={<Transactions/>}/>
+
             <Route element={<PrivateRoute/>}>
             </Route>
         </Routes>

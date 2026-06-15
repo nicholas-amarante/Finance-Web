@@ -3,6 +3,7 @@ import { FiEdit2, FiLock } from 'react-icons/fi';
 import '../index.css';
 import ExpandableMenu from '../components/ExpandableMenu';
 import { Logo } from '../components/Logo';
+import { Navbar } from '../components/Navbar';
 
 interface ProfileData{
     name: string;
@@ -29,6 +30,7 @@ function Profile(){
                 if(responseProfile.ok){
                     const dataProfile:ProfileData=await responseProfile.json();
                     setProfile(dataProfile);
+                    setOriginalProfile(dataProfile);
                 }
             }catch(error){
                 console.error("Erro ao enviar", error);
@@ -42,6 +44,9 @@ function Profile(){
         cpf: '',
         birthday: '',
     });
+
+    const [originalProfile, setOriginalProfile]=useState<ProfileData>({...profile});
+
     const [editingField, setEditingField] = useState<EditableField | null>(null);
     const [passwordMessage, setPasswordMessage] = useState('');
     const [filters, setFilters] = useState({
@@ -78,12 +83,21 @@ function Profile(){
                 },
                 body:JSON.stringify(profile)
             });
-            if(!response.ok){
-                console.error("Erro ao salvar o campo: ", field);
+            if(response.ok){
+                setOriginalProfile({...profile});
+                setEditingField(null);
+
+            }else{
+                console.error("Erro ao salvar as informações do campo:", field);
             }
         }catch(error){
-            console.error("Erro de conexão ao salvar o campo: ", error);
+            console.error("Erro de conexão, ", error);
         }
+    };
+
+    const handleCancelChanges=()=>{
+        setProfile({...originalProfile});
+        setEditingField(null);
     };
 
     const handlePasswordClick = () => {
@@ -112,6 +126,9 @@ function Profile(){
             </div>
             <div>
                 <Logo/>
+            </div>
+            <div>
+                <Navbar/>
             </div>
             <main className='relative z-10 mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-[1180px] justify-center items-end'>
                 <section className='bg-white w-full min-h-[85vh] p-4 md:p-10 rounded-tl-3xl rounded-tr-3xl z-10 flex flex-col shadow-box-custom'>
@@ -145,12 +162,12 @@ function Profile(){
                                                     value={profile[field.id]}
                                                     readOnly={!isEditing || field.id==='cpf'}
                                                     onChange={(event) => handleProfileChange(field.id, event.target.value)}
-                                                    onBlur={() => { 
-                                                        if(isEditing){
-                                                        saveFieldChanges(field.id);
-                                                        setEditingField(null);
-                                                        }
-                                                    }}
+                                                    // onBlur={() => { 
+                                                    //     if(isEditing){
+                                                    //     saveFieldChanges(field.id);
+                                                    //     setEditingField(null);
+                                                    //     }
+                                                    // }}
                                                     onKeyDown={(e) => {
                                                         if (e.key === 'Enter') {
                                                             e.preventDefault();
@@ -197,7 +214,19 @@ function Profile(){
                                 </div>
                             </form>
                         </div>
+                        
                     </div>
+
+                    {editingField !==null &&(
+                        <div className='flex justify-center gap-5 animate-in fade-in slide-in-from-top-2 duration-200'>
+                            <button type="button" onClick={handleCancelChanges} className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors font-medium text-sm">
+                                Cancelar
+                            </button>
+                            <button type="button" onClick={() => saveFieldChanges(editingField)} className="px-5 py-2 rounded-lg border">
+                                Salvar
+                            </button>
+                            </div>
+                        )}
 
                     <div className='mx-auto my-16 h-px w-full max-w-[930px] bg-black/60' />
 
