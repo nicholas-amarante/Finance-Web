@@ -130,7 +130,7 @@ function Profile(){
             <div>
                 <Navbar/>
             </div>
-            <main className='relative z-10 mx-auto flex w-full max-w-[1180px] justify-center items-start lg:items-end px-2 sm:px-4'>
+            <main className='relative z-10 mx-auto flex w-full max-w-[1180px] justify-center items-start lg:items-end px-2 sm:px-4 pt-20 sm:pt-24 md:pt-28'>
                 <section className='bg-white w-full min-h-[85vh] p-3 sm:p-5 md:p-10 rounded-t-3xl lg:rounded-tl-3xl lg:rounded-tr-3xl shadow-box-custom'>
                     <h1 className='text-center text-3xl font-medium text-black'>Perfil</h1>
 
