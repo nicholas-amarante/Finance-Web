@@ -120,9 +120,9 @@ function Profile(){
     ];
 
     return(
-        <div className='noise gradt h-screen w-screen flex flex-row'>
-            <div className='absolute z-20'>
-                <ExpandableMenu/>
+        <div className='noise gradt min-h-screen w-full flex flex-col lg:flex-row overflow-x-hidden'>
+            <div className='absolute top-2 left-2 z-20 lg:top-auto lg:left-auto'>
+                <ExpandableMenu />
             </div>
             <div>
                 <Logo/>
@@ -130,8 +130,8 @@ function Profile(){
             <div>
                 <Navbar/>
             </div>
-            <main className='relative z-10 mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-[1180px] justify-center items-end'>
-                <section className='bg-white w-full min-h-[85vh] p-4 md:p-10 rounded-tl-3xl rounded-tr-3xl z-10 flex flex-col shadow-box-custom'>
+            <main className='relative z-10 mx-auto flex w-full max-w-[1180px] justify-center items-start lg:items-end px-2 sm:px-4 pt-20 sm:pt-24 md:pt-28'>
+                <section className='bg-white w-full min-h-[85vh] p-3 sm:p-5 md:p-10 rounded-t-3xl lg:rounded-tl-3xl lg:rounded-tr-3xl shadow-box-custom'>
                     <h1 className='text-center text-3xl font-medium text-black'>Perfil</h1>
 
                     <div className='mt-4 grid gap-8 lg:grid-cols-[220px_1fr] lg:gap-12'>
@@ -139,7 +139,7 @@ function Profile(){
                             <button
                                 type='button'
                                 aria-label='Alterar foto de perfil'
-                                className='h-44 w-44 rounded-full bg-gray-300 transition-all duration-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-black/20 md:h-52 md:w-52'
+                                className='h-28 w-28 sm:h-36 sm:w-36 md:h-52 md:w-52 rounded-full bg-gray-300'
                             />
                         </div>
 
@@ -149,7 +149,7 @@ function Profile(){
                                 <div className='h-px flex-1 bg-black/60' />
                             </div>
 
-                            <form className='mt-5 grid gap-x-16 gap-y-8 md:grid-cols-2'>
+                            <form className='mt-5 grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-2'>
                                 {fieldConfig.map((field) => {
                                     const isEditing = editingField === field.id;
 
@@ -218,7 +218,7 @@ function Profile(){
                     </div>
 
                     {editingField !==null &&(
-                        <div className='flex justify-center gap-5 animate-in fade-in slide-in-from-top-2 duration-200'>
+                        <div className='flex flex-col sm:flex-row justify-center gap-3 sm:gap-5 animate-in fade-in slide-in-from-top-2 duration-200'>
                             <button type="button" onClick={handleCancelChanges} className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors font-medium text-sm">
                                 Cancelar
                             </button>
@@ -228,9 +228,9 @@ function Profile(){
                             </div>
                         )}
 
-                    <div className='mx-auto my-16 h-px w-full max-w-[930px] bg-black/60' />
+                    <div className='mx-auto my-8 md:my-16 h-px w-full max-w-[930px] bg-black/60' />
 
-                    <section className='mx-auto grid w-full max-w-[650px] gap-x-12 gap-y-9 sm:grid-cols-2 lg:grid-cols-3'>
+                    <section className='mx-auto grid w-full max-w-[650px] grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
                         <label className='flex flex-col gap-1 text-sm text-gray-700'>
                             Contas
                             <select
