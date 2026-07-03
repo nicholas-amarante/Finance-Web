@@ -60,8 +60,7 @@ export default function ExpandableMenu() {
                             <Link to="/menu">Menu</Link>
                         </>
                     )}
-
-                    {isLoggedIn && currentPath == '/transactions' && (
+                    {isLoggedIn && currentPath.includes('transaction') && (
                         <>
                             <Link to="/">Inicio</Link>
                             <Link to="/menu">Menu</Link>
