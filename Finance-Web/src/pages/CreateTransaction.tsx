@@ -7,6 +7,7 @@ import '../index.css';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { SucessModal } from '../components/SuccessModal';
+import { Navbar } from '../components/Navbar';
 
 function CreateTransaction(){
     const navigate=useNavigate();
@@ -120,61 +121,66 @@ function CreateTransaction(){
 
     return(
         <>
-            <div className='noise gradt w-screen h-screen'>
-                <div className='absolute z-20'>
+            <div className='noise gradt w-screen min-h-screen flex flex-col justify-between overflow-x-hidden'>
+                <div className="">
+                    <Navbar/>
+                </div>
+                <div>
                     <ExpandableMenu/>
                 </div>
                 <div>
                     <Logo/>
                 </div>
-                <div className='w-screen h-screen flex items-end justify-center'>
-                    <div className='w-10/12 lg:w-9/12 flex flex-col'>
+                
+                <div className='w-screen flex-1 flex items-center justify-center py-12'>
+                    <div className='w-11/12 xl:w-10/12 flex flex-col'>
                         <div className='flex flex-col'>
-                            <h1 className='leading-relaxed font-p text-white mb-1 ml-6 text-4xl'>Criar Transação</h1>
+                            <h1 className='leading-relaxed font-p text-white mb-6 ml-2 sm:ml-4 text-3xl sm:text-4xl'>Criar Transação</h1>
                         </div>
-                        <div className='bg-white w-full h-[80vh] p-10 rounded-tl-3xl z-10 rounded-tr-3xl flex flex-col justify-between overflow-y-auto '>
 
-                            <form className='grid grid-cols-1 md:grid-cols-12 gap-x-12 gap-y-9 font-p'>
-                                <div className='md:col-span-4 flex flex-col gap-2'>
-                                    <label htmlFor="font-medium">Nome</label>
-                                    <Input type="text" name="name" className='' value={name} onChange={(e)=>setName(e.target.value)} placeholder="Digite seu nome*"/>
+                        <div className='bg-white w-full h-auto p-6 sm:p-10 rounded-3xl flex flex-col justify-between shadow-2xl'>
+
+                            <form className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6 font-p w-full'>
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className="font-medium text-gray-700 text-sm">Nome</label>
+                                    <Input type="text" name="name" className='w-full' value={name} onChange={(e)=>setName(e.target.value)} placeholder="Digite seu nome*"/>
                                     {errors.name&&<span className="text-red-500 text-xs">{errors.name}</span>}
                                 </div>
-                                <div className='md:col-span-3 flex flex-col gap-2'>
-                                    <label htmlFor="font-medium">Valor</label>
-                                    <Input type="number" name="value" className='' value={value} onChange={(e)=>setValue(e.target.value)} placeholder="Digite um valor*"/>
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className="font-medium text-gray-700 text-sm">Valor</label>
+                                    <Input type="number" name="value" className='w-full' value={value} onChange={(e)=>setValue(e.target.value)} placeholder="Digite um valor*"/>
                                     {errors.value&&<span className="text-red-500 text-xs">{errors.value}</span>}
                                 </div>
-                                <div className='md:col-span-2 flex flex-col gap-2'>
-                                    <label htmlFor="font-medium" >Tipo</label>
-                                    <Select name="transactionType" id="" value={transactionType} onChange={(e)=>setTransactionType(e.target.value)}>
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className="font-medium text-gray-700 text-sm">Tipo</label>
+                                    <Select name="transactionType" id="" className='w-full' value={transactionType} onChange={(e)=>setTransactionType(e.target.value)}>
                                         <option value="" disabled selected>Selecione o tipo</option>
                                         <option value="INCOME">Receita</option>
                                         <option value="EXPENSE">Despesa</option>
                                     </Select>
                                     {errors.transactionType&&<span className="text-red-500 text-xs">{errors.transactionType}</span>}
                                 </div>
-                                <div className='md:col-span-2 flex flex-col gap-2'>
-                                    <label htmlFor="">Banco</label>
-                                    <Select name="BankId" id="" options={bankOptions} value={bankSelected} onChange={(e)=>{setBankSelected(e.target.value); setAccountSelected(""); }}>
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className="font-medium text-gray-700 text-sm">Banco</label>
+                                    <Select name="BankId" id="" className='w-full' options={bankOptions} value={bankSelected} onChange={(e)=>{setBankSelected(e.target.value); setAccountSelected(""); }}>
                                         <option value="" disabled selected>Selecione o banco</option>
                                     </Select>
                                 </div>
                                 <div className='md:col-span-3 flex flex-col gap-2'>
-                                    <label htmlFor="">Reserva</label>
+                                    <label htmlFor="">Conta</label>
                                     <Select name="accounts" id="" options={accountOptions} value={accountSelected} onChange={(e) => setAccountSelected(e.target.value)} disabled={!bankSelected}>
                                         <option value="" disabled selected>{bankSelected ? "Selecione a conta":"Selecione o banco primeiro"}</option>
                                     </Select>
                                     {errors.accounts&&<span className="text-red-500 text-xs">{errors.accounts}</span>}
                                 </div>
-                                <div className='md:col-span-3 flex flex-col gap-2'>
-                                    <label htmlFor="">Categoria</label>
-                                    <Select name='categorys' id="" options={categorys} value={categorySelected} onChange={(e)=> setCategorySelected(e.target.value)}>
+                                <div className='flex flex-col gap-1.5'>
+                                    <label className="font-medium text-gray-700 text-sm">Categoria</label>
+                                    <Select name='categorys' id="" className='w-full' options={categorys} value={categorySelected} onChange={(e)=> setCategorySelected(e.target.value)}>
                                         <option value="" disabled selected>Selecione uma categoria</option>
                                     </Select>
                                     {errors.categorys&&<span className="text-red-500 text-xs">{errors.categorys}</span>}
                                 </div>
-                                {/* <div className='md:col-span-3 flex flex-col gap-2'>
+                                <div className='md:col-span-3 flex flex-col gap-2'>
                                     <label htmlFor="font-medium">Fonte</label>
                                     <Select name="" id="" className=''>
                                         <option value="" disabled selected>Selecione a fonte</option>
@@ -183,21 +189,23 @@ function CreateTransaction(){
                                 <div className='md:col-span-3 flex flex-col gap-2'>
                                     <label htmlFor="font-medium">Destino</label>
                                     <Input type="text" className='' placeholder="Digite um destino(opcional)"/>
-                                </div>*/}
+                                </div>
 
                                 <div className='md:col-span-4 flex flex-col gap-2'>
                                     <label htmlFor="">Descrição</label>
                                     <Input type="text" className='' placeholder="Digite uma descrição(opcional)"/>
                                 </div>
                             </form>
-                            <div className='flex flex-row m-auto h-[10vh] gap-6 mt-45'>
-                                <div className='flex m-auto'>
-                                    <Button className='w-30' onClick={handleCreateTransaction}>Enviar</Button>
+
+                           <div className='flex flex-col sm:flex-row justify-center items-center gap-4 mt-12 w-full'>
+                                <div className='w-full sm:w-auto'>
+                                    <Button className='w-full sm:w-40 py-2.5' onClick={handleCreateTransaction}>Enviar</Button>
                                 </div>
-                                <div className='flex m-auto'>
-                                    <Button className='w-40' to='/menu'>Voltar ao menu</Button>
+                                <div className='w-full sm:w-auto'>
+                                    <Button className='w-full sm:w-44 py-2.5' to='/menu'>Voltar ao menu</Button>
                                 </div>
                             </div>
+
                             <SucessModal 
                                 isOpen={isModalOpen} 
                                 onClose={() => setIsModalOpen(false)}
@@ -206,9 +214,6 @@ function CreateTransaction(){
                             />
                         </div>
                     </div>
-                </div>
-                <div>
-
                 </div>
             </div>
         </>
