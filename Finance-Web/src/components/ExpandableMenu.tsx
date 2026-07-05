@@ -67,6 +67,13 @@ export default function ExpandableMenu() {
                             <Link to="/menu">Menu</Link>
                         </>
                     )}
+
+                    {isLoggedIn && currentPath=='/transaction' &&(
+                        <>
+                            <Link to="/">Inicio</Link>
+                            <Link to="/menu">Menu</Link>
+                        </>
+                    )}
                 </div>
             )}
         </div>

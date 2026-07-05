@@ -173,7 +173,7 @@ function Menu(){
                                     <Button className='w-full sm:w-30 p-2' to='/transaction'>ADICIONAR</Button>
                                 </div>
                                 <div>
-                                    <Button className='w-full sm:w-30 p-2' to='/transaction'>TRANSAÇÕES</Button>
+                                    <Button className='w-full sm:w-30 p-2' to='/transactions'>TRANSAÇÕES</Button>
                                 </div>
                             </div>
                         </div>

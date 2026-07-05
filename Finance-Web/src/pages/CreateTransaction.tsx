@@ -130,9 +130,9 @@ function CreateTransaction(){
                 <div className='w-screen h-screen flex items-end justify-center'>
                     <div className='w-10/12 lg:w-9/12 flex flex-col'>
                         <div className='flex flex-col'>
-                            <h1 className='leading-relaxed font-p text-white mb-10 ml-6 text-4xl'>Criar Transação</h1>
+                            <h1 className='leading-relaxed font-p text-white mb-1 ml-6 text-4xl'>Criar Transação</h1>
                         </div>
-                        <div className='bg-white w-full h-[65vh] p-10 rounded-tl-3xl z-10 rounded-tr-3xl flex flex-col justify-between overflow-y-auto '>
+                        <div className='bg-white w-full h-[80vh] p-10 rounded-tl-3xl z-10 rounded-tr-3xl flex flex-col justify-between overflow-y-auto '>
 
                             <form className='grid grid-cols-1 md:grid-cols-12 gap-x-12 gap-y-9 font-p'>
                                 <div className='md:col-span-4 flex flex-col gap-2'>
@@ -161,7 +161,7 @@ function CreateTransaction(){
                                     </Select>
                                 </div>
                                 <div className='md:col-span-3 flex flex-col gap-2'>
-                                    <label htmlFor="">Conta</label>
+                                    <label htmlFor="">Reserva</label>
                                     <Select name="accounts" id="" options={accountOptions} value={accountSelected} onChange={(e) => setAccountSelected(e.target.value)} disabled={!bankSelected}>
                                         <option value="" disabled selected>{bankSelected ? "Selecione a conta":"Selecione o banco primeiro"}</option>
                                     </Select>
@@ -174,7 +174,7 @@ function CreateTransaction(){
                                     </Select>
                                     {errors.categorys&&<span className="text-red-500 text-xs">{errors.categorys}</span>}
                                 </div>
-                                <div className='md:col-span-3 flex flex-col gap-2'>
+                                {/* <div className='md:col-span-3 flex flex-col gap-2'>
                                     <label htmlFor="font-medium">Fonte</label>
                                     <Select name="" id="" className=''>
                                         <option value="" disabled selected>Selecione a fonte</option>
@@ -183,7 +183,7 @@ function CreateTransaction(){
                                 <div className='md:col-span-3 flex flex-col gap-2'>
                                     <label htmlFor="font-medium">Destino</label>
                                     <Input type="text" className='' placeholder="Digite um destino(opcional)"/>
-                                </div>
+                                </div>*/}
 
                                 <div className='md:col-span-4 flex flex-col gap-2'>
                                     <label htmlFor="">Descrição</label>
