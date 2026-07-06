@@ -45,7 +45,7 @@ export function Navbar(){
                     </div>
                 ) : (
                      /* BOTÕES PARA QUEM NÃO ESTÁ LOGADO */
-                    <div className="absolute top-6 right-6 sm:top-8 sm:right-10 flex gap-2 sm:gap-4 z-20">
+                    <div className="absolute top-14 right-6 sm:top-8 sm:right-10 flex gap-2 sm:gap-4 z-20">
                         <button onClick={() => navigate("/login")} className="font-p bg-white/70 backdrop-blur-md hover:bg-white hover:scale-110 text-gray-800 px-3 sm:px-6 py-1.5 sm:py-2 text-sm sm:text-base rounded-full transition">
                             Entrar
                         </button>

@@ -112,104 +112,104 @@ function Menu(){
     
     return(
         <>
-            <div className='noise gradt min-h-screen w-full overflow-x-hidden'>
-                <div className='absolute z-20'>
-                    <ExpandableMenu/>
-                </div>
-                <div>
-                    <Logo/>
-                </div>
-                <div>
+            <div className='noise gradt min-h-screen w-full overflow-x-hidden flex flex-col justify-between relative pb-0'>        
+                <div className="">
                     <Navbar/>
                 </div>
-                <div className='w-full min-h-screen flex items-end justify-center px-2 sm:px-4'>
-                    <div className='bg-white w-full max-w-[1400px] min-h-[85vh] p-4 md:p-10 rounded-tl-3xl rounded-tr-3xl z-10 flex flex-col'>{/*caixa central */}
-                        <div className='z-30 flex flex-col lg:flex-row gap-6 lg:items-center lg:justify-between mb-10'>{/*primeira linha*/}
+                <div className='z-20'>
+                    <ExpandableMenu/>
+                </div>
+                <div className="">
+                    <Logo/>
+                </div>
+                
+                <div className='w-full flex-1 flex items-end justify-center px-4 sm:px-6 lg:px-8 mt-16'>
+                    <div className='bg-white w-full max-w-[1400px] min-h-[85vh] h-auto p-6 md:p-10 rounded-tl-3xl rounded-tr-3xl z-10 flex flex-col shadow-2xl justify-between'>{/*caixa central */}
+                        
+                        <div className='grid grid-cols-1 md:grid-cols-3 gap-6 items-center mb-10 w-full'>{/*primeira linha*/}
 
-                            <div className='flex flex-col sm:flex-row gap-4 sm:gap-6 lg:-mt-20'>{/*seletor*/}
-                                <div className='flex flex-row'>
-                                    <p className='mr-3'>Mês: </p>
-                                    <div className='-mt-1.5'>
-                                        <MonthSelector selectedMonth={mesSelecionado} onMonthChange={setMesSelecionado}/>
-                                    </div>
+                            <div className='flex flex-row sm:flex-row gap-4 sm:gap-6 justify-center md:justify-start items-center w-full'>{/*seletor*/}
+                                <div className='flex flex-row items-center'>
+                                    <p className='mr-2 font-medium text-gray-700'>Mês:</p>
+                                    <MonthSelector selectedMonth={mesSelecionado} onMonthChange={setMesSelecionado}/>
                                 </div>
-                                <div className='flex flex-row'>
-                                    <p className='mr-3'>Ano: </p>
-                                    <div className='-mt-1.5'>
-                                        <YearSelector selectedYear={anoSelecionado} onYearChange={setAnoSelecionado} />
-                                    </div>
+                                <div className='flex flex-row items-center'>
+                                    <p className='mr-2 font-medium text-gray-700'>Ano:</p>
+                                    <YearSelector selectedYear={anoSelecionado} onYearChange={setAnoSelecionado} />
                                 </div>
                             </div>
 
-                            <div className='flex flex-col items-center bg-gray-50 px-6 py-2.5 rounded-xl border border-gray-100 shadow-sm'>
-                                <div className='flex flex-col items-center bg-gray-50 px-5 py-2.5 rounded-xl border border-gray-100 min-w-[140px] shadow-sm'>
+                            <div className='flex flex-col items-center bg-gray-50 px-6 py-4 rounded-2xl border border-gray-100 shadow-sm w-full max-w-md mx-auto'>
+                                <div className='flex flex-col items-center bg-white px-6 py-2 rounded-xl border border-gray-100 min-w-[160px] shadow-sm mb-3 w-full text-center'>
                                     <span className='text-[10px] uppercase tracking-wider font-bold text-gray-400'>
                                         Saldo Atual
                                     </span>
-                                    <p className='text-base font-bold text-gray-800 mt-0.5'>
+                                    <p className='text-lg font-bold text-gray-800 mt-0.5'>
                                         {formatarMoeda(dashboard.totalCurrentBalance || 0)} {/* Use a variável do saldo geral aqui */}
                                     </p>
                                 </div>
-                                <div>
-                                    <span className='text-[10px] uppercase tracking-wider font-bold text-gray-400 mb-1.5'>
+                                <div className="w-full text-center">
+                                    <span className='text-[10px] uppercase tracking-wider font-bold text-gray-400 block mb-2'>
                                         Resumo Mensal
                                     </span>
-                                    <div className='flex flex-row gap-4 md:gap-6 items-center text-sm font-medium text-gray-700'>
-                                        <Link to="">
-                                            <p>Saldo: {formatarMoeda(dashboard.balance)}</p>
+                                    <div className='flex flex-row justify-around gap-2 items-center text-xs font-semibold text-gray-600 w-full'>
+                                        <Link to="" className="hover:text-blue-600 transition">
+                                            <p>Saldo: <span className="block text-gray-800 font-bold mt-0.5">{formatarMoeda(dashboard.balance)}</span></p>
                                         </Link>
-                                        <Link to="">
-                                            <p>Receita: {formatarMoeda(dashboard.totalIncome)}</p>
+                                        <Link to="" className="hover:text-green-600 transition">
+                                            <p>Receita: <span className="block text-green-600 font-bold mt-0.5">{formatarMoeda(dashboard.totalIncome)}</span></p>
                                         </Link>
-                                        <Link to="">
-                                            <p>Despesas: {formatarMoeda(dashboard.totalExpense)}</p>
+                                        <Link to="" className="hover:text-red-600 transition">
+                                            <p>Despesas: <span className="block text-red-600 font-bold mt-0.5">{formatarMoeda(dashboard.totalExpense)}</span></p>
                                         </Link>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className='flex flex-col sm:flex-row gap-4 w-full lg:w-auto'>{/*botoes*/}
-                                <div>
-                                    <Button className='w-full sm:w-30 p-2' to='/transaction'>ADICIONAR</Button>
+                            <div className='flex flex-col sm:flex-row md:flex-col lg:flex-row gap-4 w-full justify-center md:justify-end items-center'>{/*botoes*/}
+                                <div className="w-full sm:w-auto lg:w-1/2 max-w-[200px]">
+                                    <Button className='w-full py-2.5 text-sm font-semibold tracking-wider' to='/transaction'>ADICIONAR</Button>
                                 </div>
-                                <div>
-                                    <Button className='w-full sm:w-30 p-2' to='/transaction'>TRANSAÇÕES</Button>
+                                <div className="w-full sm:w-auto lg:w-1/2 max-w-[200px]">
+                                    <Button className='w-full py-2.5 text-sm font-semibold tracking-wider' to='/transaction'>TRANSAÇÕES</Button>
                                 </div>
                             </div>
                         </div>
-                        <div className='flex flex-col xl:flex-row gap-6 flex-1 min-h-0'> {/*celular - empilha / desktop - lado a lado*/}
 
-                            <div className='flex-[1] bg-gray-50 rounded-2xl p-6 flex flex-col items-center justify-center border border-gray-100'>
+                        <div className='grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1 w-full items-stretch'>{/*celular - empilha / desktop - lado a lado*/}
+
+                            <div className='lg:col-span-5 bg-gray-50 rounded-2xl p-6 flex flex-col items-center justify-between border border-gray-100 min-h-[350px] lg:min-h-0'>
                                 <h3 className='text-gray-700 font-bold mb-4 self-start'>Distribuição de Gastos</h3>
-                                <div className='w-full h-full flex items-center justify-center '>
+                                <div className='w-full flex-1 flex items-center justify-center max-h-[300px]'>
                                     <ChartDonut data={dadosGrafico}/>
                                 </div>
                             </div>
 
-                            <div className='flex-[1.5] flex flex-col'>
+                            <div className='lg:col-span-7 bg-gray-50 rounded-2xl p-6 flex flex-col border border-gray-100 min-h-[350px] lg:min-h-0 justify-between'>
                                 <h3 className='text-gray-700 font-bold mb-4'>Últimas Transações</h3>
-                                <div className='overflow-y-auto pr-2 space-y-3'>
+                                <div className='flex-1 overflow-y-auto pr-1 space-y-3 max-h-[320px]'>
                                     {dashboard.latestTransactions && dashboard.latestTransactions.length > 0?(
                                         dashboard.latestTransactions.map((transaction)=>(
-                                            <div key={transaction.id} className='flex justify-between items-center p-4 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow'>
-                                                <div className='flex items-center gap-4'>
-                                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${transaction.transactionType === 'INCOME' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                                            <div key={transaction.id} className='flex justify-between items-center p-3.5 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow'>
+                                                <div className='flex items-center gap-3 min-w-0'>
+                                                    <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold ${transaction.transactionType === 'INCOME' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
                                                         {transaction.transactionType === 'INCOME' ? '+' : '-'}
                                                     </div>
-                                                    <div>
-                                                        <p className='font-semibold text-gray-800'>{transaction.name}</p>
-                                                        <p className='text-xs text-gray-400'>{formatarData(transaction.dateTime)} • {transaction.categoryName}</p>
+                                                    <div className="min-w-0">
+                                                        <p className='font-semibold text-gray-800 text-sm truncate'>{transaction.name}</p>
+                                                        <p className='text-[11px] text-gray-400 truncate'>{formatarData(transaction.dateTime)} • {transaction.categoryName}</p>
                                                     </div>
                                                 </div>
 
-                                                <p className={`font-bold ${transaction.transactionType === 'INCOME' ? 'text-green-500' : 'text-red-500'}`}>
+                                                <p className={`font-bold text-sm flex-shrink-0 ml-2 ${transaction.transactionType === 'INCOME' ? 'text-green-500' : 'text-red-500'}`}>
                                                     {transaction.transactionType === 'INCOME' ? '+' : '-'} {formatarMoeda(transaction.value)}
                                                 </p>
 
                                             </div>
-                                        )
-                                    )):(
-                                        <p className="text-gray-400 text-center py-10">Nenhuma transação encontrada.</p>
+                                        ))):(
+                                        <div className="h-full flex items-center justify-center">
+                                            <p className="text-gray-400 text-center py-10">Nenhuma transação encontrada.</p>
+                                        </div>
                                     )}
                                 </div>
                             </div>
