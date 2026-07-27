@@ -5,52 +5,50 @@ import { Logo } from "../components/Logo";
 import { Navbar } from "../components/Navbar";
 
 interface Transaction{
-    id:string;
+    id:number;
     name:string;
-    dateTime:string;
     description:string;
+    value:number;
+    categoryName:string;
+    transactionType:'INCOME'|'EXPENSE';
+    dateTime:string;
     bank:string;
-    reserve:string;
-    category:string;
-    amount:number;
-    type:'INCOME'|'EXPENSE';
 }
 
 function Transactions(){
     const[transactions, setTransactions]=useState<Transaction[]>([]);
+
     useEffect(()=>{
-        const mockData:Transaction[]=[
-            {
-                id: '1',
-                name: 'Título 01...',
-                dateTime: '01/01/2026',
-                description: 'Pagamento ref...',
-                bank: 'Bradesco',
-                reserve: 'Emergência',
-                category: 'Transporte',
-                amount: 1233.00,
-                type: 'INCOME'
-            },
-            {
-                id: '2',
-                name: 'Título 02...',
-                dateTime: '01/01/2026',
-                description: 'Pagamento ref...',
-                bank: 'Nubank',
-                reserve: 'Carro',
-                category: 'Transporte',
-                amount: 1233.00,
-                type: 'EXPENSE'
-            },
-            // Itens vazios/skeleton para simular o restante da lista do seu print
-            { id: '3', name: '', dateTime: '', description: '', bank: '', reserve: '', category: '', amount: 0, type: 'INCOME' },
-            { id: '4', name: '', dateTime: '', description: '', bank: '', reserve: '', category: '', amount: 0, type: 'INCOME' },
-            { id: '5', name: '', dateTime: '', description: '', bank: '', reserve: '', category: '', amount: 0, type: 'EXPENSE' },
-            { id: '5', name: '', dateTime: '', description: '', bank: '', reserve: '', category: '', amount: 0, type: 'INCOME' },
-            { id: '5', name: '', dateTime: '', description: '', bank: '', reserve: '', category: '', amount: 0, type: 'EXPENSE' },
-            { id: '5', name: '', dateTime: '', description: '', bank: '', reserve: '', category: '', amount: 0, type: 'EXPENSE' },
-        ];
-        setTransactions(mockData);
+        const carregarDados=async()=>{
+            try{
+                const token=localStorage.getItem('tokenJwt');
+                const headers={
+                    'Content-Type':'application/json',
+                    'Authorization':`Bearer ${token}`
+                };
+                const urlTransactions=`http://localhost:8080/api/transactions`;
+                const [responseTransactions]=await Promise.all([
+                    fetch(urlTransactions, {method:'GET', headers})
+                ]);
+
+                if (responseTransactions.ok) {
+                    const transactionData = await responseTransactions.json();
+
+                    if (transactionData && Array.isArray(transactionData.content)) {
+                        setTransactions(transactionData.content);
+                    } else if (Array.isArray(transactionData)) {
+                        setTransactions(transactionData);
+                    } else {
+                        setTransactions([]);
+                    }
+                }else{
+                    console.error("Erro ao buscar as informacoes", responseTransactions.status);
+                }
+            }catch(erro){
+                console.error("Erro de conexao", erro);
+            }
+        };
+        carregarDados();
     }, []);
 
     const formatarMoeda=(valor:number)=>{
@@ -59,6 +57,12 @@ function Transactions(){
             currency: 'BRL'
         }).format(valor);
     }
+
+    const formatarData = (dataIso: string) => {
+        if (!dataIso) return "";
+        const data = new Date(dataIso);
+        return data.toLocaleDateString('pt-BR');
+    };
 
     return(
         <>
@@ -74,24 +78,25 @@ function Transactions(){
                     <div className="w-10/12 lg:w-9/11 flex flex-col">
                         <h1 className="text-3xl font-medium text-white mb-6 ml-4 tracking-wide">Transações</h1>
                         <section className="bg-white w-full h-[80vh] z-10 flex flex-col p-10 rounded-tl-3xl rounded-tr-3xl justify-between overflow-y-auto">
-                            <div className="hidden lg:grid grid-cols-[80px_1.2fr_1.5fr_1fr_1fr_1fr_1.2fr_1.2fr_1.2fr_50px] px-6 text-xs font-semibold text-gray-400 text-center items-center mb-2">
+                            <div className="hidden lg:grid lg:grid-cols-[140px_1.6fr_1fr_1fr_1fr_1fr_1.3fr_1px] px-6 text-xs font-semibold text-gray-400 text-center items-center mb-2">
                                 <div></div>
                                 <div className="text-left">Nome</div>
                                 <div className="text-left">Descrição</div>
                                 <div>Banco</div>
-                                <div>Reserva</div>
                                 <div>Categoria</div>
                                 <div>Valor</div>
                                 <div></div>
                             </div>
 
-                            <div className="lg:h-[620px] gap-7 flex flex-col justify-between overflow-y-auto scrollbar-thin">
-                                {transactions.map((item) => {
-                                    const isIncome = item.type === 'INCOME';
+                            <div className="lg:h-[620px] gap-7 flex flex-col justify-between overflow-y-auto scrollbar-thin pt-3">
+                                {transactions && transactions.map((item, index) => {
+                                    if (!item) return null;
+                                    const isIncome = item.transactionType === 'INCOME';
                                     const isEmpty = !item.name;
+                                    const itemKey = item.id ? `tx-${item.id}` : `tx-fallback-${index}`;
         
                                 return (
-                                    <div key={item.id} className='w-full min-h-[76px] rounded-2xl bg-gray-50/60 border border-gray-100 shadow-sm p-4 lg:px-6 flex flex-col lg:grid lg:grid-cols-[70px_1.2fr_1.5fr_1fr_1fr_1fr_1.2fr_1.2fr_1.2fr_50px] items-center gap-3 lg:gap-2 text-center text-sm transition-all duration-200 hover:bg-gray-50'>
+                                    <div key={itemKey} className='w-full min-h-[76px] flex flex-col items-center gap-3 p-2 rounded-2xl bg-gray-50/60 border border-gray-100 shadow-sm lg:px-5 lg:grid lg:grid-cols-[80px_1.5fr_1.5fr_1fr_1fr_1fr_1.2fr_10px] lg:gap-4 text-center text-sm transition-all duration-400 hover:bg-gray-100'>
                                         
                                         <div className={`h-12 w-13 rounded-xl flex items-center justify-center border ${
                                             isIncome 
@@ -105,48 +110,40 @@ function Transactions(){
                                             <>
                                                 {/* 2. Nome e Data */}
                                                 <div className='flex flex-col text-center lg:text-left w-full'>
-                                                    <span className='font-bold text-gray-800 text-base lg:text-sm'>{item.name}</span>
-                                                    <span className='text-[10px] text-gray-400 mt-2'>{item.dateTime}</span>
+                                                    <span className='font-bold text-gray-800 text-base lg:text-sm'>{item.name || "Sem nome"}</span>
+                                                    <span className='text-[10px] text-gray-400 mt-2'>{formatarData(item.dateTime)}</span>
                                                 </div>
         
                                                 {/* 3. Descrição */}
-                                                <div className='text-gray-500 text-center lg:text-left w-full truncate px-2'>
-                                                    {item.description}
+                                                <div className='relative group text-gray-500 text-center lg:text-left min-w-0 px-2 cursor-pointer'>
+                                                    <p className='text-gray-500 text-center lg:text-left truncate w-full'>
+                                                        {item.description || "Sem descricao"}
+                                                    </p>
+
+                                                    {item.description && (
+                                                        <div className='absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:flex flex-col items-center z-30 pointer-events-none w-max max-w-xs'>
+                                                            <span className='bg-gray-900 text-white text-xs rounded-lg py-1.5 px-3 shadow-lg font-medium text-center whitespace-normal break-words'>
+                                                                {item.description}
+                                                            </span>
+                                                            <div className='w-2 h-2 bg-gray-900 rotate-45 -mt-1'></div>
+                                                        </div>
+                                                    )}
                                                 </div>
         
                                                 {/* 4. Banco */}
                                                 <div className='text-gray-600 font-medium bg-white lg:bg-transparent px-3 py-1 rounded-full lg:p-0 border border-gray-200 lg:border-none'>
-                                                    {item.bank}
-                                                </div>
-        
-                                                {/* 5. Reserva */}
-                                                <div className='text-gray-600 font-medium'>
-                                                    {item.reserve}
+                                                    {item.bank || "-"}
                                                 </div>
         
                                                 {/* 6. Categoria */}
                                                 <div className='text-gray-500 bg-gray-200/50 px-3 py-1 rounded-md text-xs font-semibold'>
-                                                    {item.category}
+                                                    {item.categoryName || "Geral"}
                                                 </div>
-        
-                                                {/* 7. Saldo Antes */}
-                                                {/* <div className={`font-semibold px-4 py-1.5 rounded-lg border w-full max-w-[120px] lg:max-w-none ${
-                                                    isIncome ? 'text-red-500 bg-red-50/30 border-red-100' : 'text-green-600 bg-green-50/30 border-green-100'
-                                                }`}>
-                                                    {formatarMoeda(item.balanceBefore)}
-                                                </div> */}
         
                                                 {/* 8. Valor Cadastrado (Caixa Branca de Destaque) */}
                                                 <div className='font-bold text-gray-700 bg-white px-4 py-1.5 rounded-lg border border-gray-200/80 shadow-sm w-full max-w-[120px] lg:max-w-none'>
-                                                    {formatarMoeda(item.amount)}
+                                                    {formatarMoeda(item.value)}
                                                 </div>
-        
-                                                {/* 9. Saldo Depois */}
-                                                {/* <div className={`font-semibold px-4 py-1.5 rounded-lg border w-full max-w-[120px] lg:max-w-none ${
-                                                    isIncome ? 'text-green-600 bg-green-50/30 border-green-100' : 'text-red-500 bg-red-50/30 border-red-100'
-                                                }`}>
-                                                    {formatarMoeda(item.balanceAfter)}
-                                                </div> */}
         
                                                 {/* 10. Botão de Opções (Três Pontinhos) */}
                                                 <button className='text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200/50 transition-colors lg:ml-auto'>
