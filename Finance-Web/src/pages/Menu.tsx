@@ -43,7 +43,7 @@ function Menu(){
     const nomesMeses = [
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
     "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-];
+    ];
     const [dashboard, setDashboard]=useState<DashboardData>({balance:0, totalIncome:0, totalExpense:0, expenseByCategory:[], latestTransactions:[], totalCurrentBalance:0});
     const [mesSelecionado, setMesSelecionado]=useState<string>(nomesMeses[new Date().getMonth()]);
     const [anoSelecionado, setAnoSelecionado]=useState(new Date().getFullYear());
@@ -65,11 +65,13 @@ function Menu(){
                     fetch(url, {method: 'GET', headers}),
                     fetch(urlCategorias, {method: 'GET', headers}),
                     fetch(urlTransactions, {method: 'GET', headers})
-                ]) ;
+                ]);
                 if(responseResumo.ok && responseCategorias.ok && responseTransactions.ok){
+                    
                     const dadosResumo=await responseResumo.json();
                     const dadosCategorias=await responseCategorias.json();
                     const dadosTransactions=await responseTransactions.json();
+
                     setDashboard({
                         balance: dadosResumo.balance,
                         totalIncome: dadosResumo.totalIncome,

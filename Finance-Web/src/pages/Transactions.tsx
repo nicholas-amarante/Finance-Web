@@ -3,6 +3,8 @@ import ExpandableMenu from "../components/ExpandableMenu";
 import { MoreVertical, TrendingUp, TrendingDown } from 'lucide-react';
 import { Logo } from "../components/Logo";
 import { Navbar } from "../components/Navbar";
+import {MonthSelector} from '../components/MonthSelector';
+import { YearSelector } from '../components/YearSelector';
 
 interface Transaction{
     id:number;
@@ -16,10 +18,28 @@ interface Transaction{
 }
 
 function Transactions(){
+    
+    const mesesMap:{[key:string]:number}={
+        "Janeiro": 1, "Fevereiro": 2, "Março": 3, "Abril": 4,
+        "Maio": 5, "Junho": 6, "Julho": 7, "Agosto": 8,
+        "Setembro": 9, "Outubro": 10, "Novembro": 11, "Dezembro": 12
+    }
+
+    const nomesMeses = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ];
+
+    const dataAtual=new Date();
+    const [mesSelecionado, setMesSelecionado]=useState<string>(nomesMeses[dataAtual.getMonth()]);
+    const [anoSelecionado, setAnoSelecionado]=useState(dataAtual.getFullYear());
+
     const[transactions, setTransactions]=useState<Transaction[]>([]);
+
 
     useEffect(()=>{
         const carregarDados=async()=>{
+            const mesNumero=mesesMap[mesSelecionado] || mesesMap[new Date().getMonth()]
             try{
                 const token=localStorage.getItem('tokenJwt');
                 const headers={
@@ -49,7 +69,7 @@ function Transactions(){
             }
         };
         carregarDados();
-    }, []);
+    }, [mesSelecionado, anoSelecionado]);
 
     const formatarMoeda=(valor:number)=>{
         return new Intl.NumberFormat('pt-BR', {
@@ -77,8 +97,22 @@ function Transactions(){
                 <main className="w-screen h-screen flex items-end justify-center">
                     <div className="w-10/12 lg:w-9/11 flex flex-col">
                         <h1 className="text-3xl font-medium text-white mb-6 ml-4 tracking-wide">Transações</h1>
-                        <section className="bg-white w-full h-[80vh] z-10 flex flex-col p-10 rounded-tl-3xl rounded-tr-3xl justify-between overflow-y-auto">
-                            <div className="hidden lg:grid lg:grid-cols-[140px_1.6fr_1fr_1fr_1fr_1fr_1.3fr_1px] px-6 text-xs font-semibold text-gray-400 text-center items-center mb-2">
+                        <section className="bg-white w-full h-[89vh] z-10 flex flex-col p-10 rounded-tl-3xl rounded-tr-3xl justify-between overflow-y-auto">
+                            <div className="flex">
+                                <div className="flex flex-row">
+                                    <div className='flex flex-row mr-5'>
+                                        <div className='-mt-1.5'>
+                                            <MonthSelector className="w-30" divInsideButtonClassName="p-1 ml-19" ioIoArrowDownClassName="h-3.5 w-3.5" selectedMonth={mesSelecionado} onMonthChange={setMesSelecionado}/>
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-row'>
+                                        <div className='-mt-1.5'>
+                                            <YearSelector selectedYear={anoSelecionado} onYearChange={setAnoSelecionado} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-green-100 hidden lg:grid lg:grid-cols-[140px_1.6fr_1fr_1fr_1fr_1fr_1.3fr_1px] px-6 text-xs font-semibold text-gray-400 text-center items-center mb-2">
                                 <div></div>
                                 <div className="text-left">Nome</div>
                                 <div className="text-left">Descrição</div>

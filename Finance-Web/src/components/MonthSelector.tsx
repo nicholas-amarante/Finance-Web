@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
+import { cn } from "../utils/cn";
 
 interface MonthSelectorProps {
-  selectedMonth: string;            // O mês atual (vem do pai)
-  onMonthChange: (month: string) => void; // A função para mudar o mês (vem do pai)
+    selectedMonth: string;            // O mês atual (vem do pai)
+    onMonthChange: (month: string) => void; // A função para mudar o mês (vem do pai)
+    className?: string;
+    divInsideButtonClassName?: string;
+    ioIoArrowDownClassName?: string;
 }
 
-export function MonthSelector({selectedMonth, onMonthChange}:MonthSelectorProps){
+export function MonthSelector({selectedMonth, onMonthChange, className, divInsideButtonClassName, ioIoArrowDownClassName}:MonthSelectorProps){
     const[isOpen, setIsOpen]=useState(false);
     const months=["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
@@ -16,13 +20,13 @@ export function MonthSelector({selectedMonth, onMonthChange}:MonthSelectorProps)
     };
 
     return(
-        <div className="relative inline-block text-left font-p z-20">
-            <button type="button" onClick={()=> setIsOpen(!isOpen)} className="h-8 w-35 -mt-2 px-4 flex items-center  rounded-md border-gray-300 bg-white text-sm font-medium text-black shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div className={("relative inline-block text-left font-p z-20")}>
+            <button type="button" onClick={()=> setIsOpen(!isOpen)} className={cn("h-8 w-35 -mt-2 px-4 flex items-center rounded-md border-gray-300 bg-white text-sm font-medium text-black shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500", className)}>
                 <span>
                     {selectedMonth}
                 </span>
-                <div className="absolute bg-orange-300 p-1 rounded-md ml-23">
-                    <IoIosArrowDown className={`h-5 w-5 transition-transform duration-150 ${isOpen?"rotate-180":"rotate-0"}`}/>
+                <div className={cn("absolute bg-orange-300 p-1 rounded-md ml-23", divInsideButtonClassName)}>
+                    <IoIosArrowDown className={cn("h-5 w-5 transition-transform duration-150", isOpen?"rotate-180":"rotate-0", ioIoArrowDownClassName)}/>
                 </div>
             </button>
             {isOpen&&(
