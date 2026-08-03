@@ -18,42 +18,52 @@ interface Transaction{
 }
 
 function Transactions(){
-    
     const mesesMap:{[key:string]:number}={
         "Janeiro": 1, "Fevereiro": 2, "Março": 3, "Abril": 4,
         "Maio": 5, "Junho": 6, "Julho": 7, "Agosto": 8,
         "Setembro": 9, "Outubro": 10, "Novembro": 11, "Dezembro": 12
     }
-
     const nomesMeses = [
-    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
-    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
+        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
-
+    const [isRangeActive, setIsRangeActive] = useState<boolean>(false);
     const dataAtual=new Date();
-    const [mesSelecionado, setMesSelecionado]=useState<string>(nomesMeses[dataAtual.getMonth()]);
-    const [anoSelecionado, setAnoSelecionado]=useState(dataAtual.getFullYear());
-
     const[transactions, setTransactions]=useState<Transaction[]>([]);
 
+    const [startMonth, setStartMonth] = useState<number>(dataAtual.getMonth()+1);
+    const [startYear, setStartYear] = useState<number>(dataAtual.getFullYear());
+    const [endMonth, setEndMonth] = useState<number>(dataAtual.getMonth()+1);
+    const [endYear, setEndYear] = useState<number>(dataAtual.getFullYear());
+
+    const getRangeDates=()=>{
+        const startMFormatted=String(startMonth).padStart(2, '0');
+        const startDate=`${startYear}-${startMFormatted}-01T00:00:00`;
+        const finalM=isRangeActive?endMonth:startMonth;
+        const finalY=isRangeActive?endYear:startYear;
+        const lastDay=new Date(finalY, finalM, 0).getDate();
+        const lastDayFormatted=String(lastDay).padStart(2, '0');
+        const finalMFormatted=String(finalM).padStart(2, '0');
+        const endDate=`${finalY}-${finalMFormatted}-${lastDayFormatted}T23:59:59`;
+        return { startDate, endDate };
+    }
 
     useEffect(()=>{
         const carregarDados=async()=>{
-            const mesNumero=mesesMap[mesSelecionado] || mesesMap[new Date().getMonth()]
             try{
                 const token=localStorage.getItem('tokenJwt');
                 const headers={
                     'Content-Type':'application/json',
                     'Authorization':`Bearer ${token}`
                 };
-                const urlTransactions=`http://localhost:8080/api/transactions`;
+                const { startDate, endDate } = getRangeDates();
+                const urlTransactions=`http://localhost:8080/api/transactions?startDate=${startDate}&endDate=${endDate}&size=50`;
                 const [responseTransactions]=await Promise.all([
                     fetch(urlTransactions, {method:'GET', headers})
                 ]);
 
                 if (responseTransactions.ok) {
                     const transactionData = await responseTransactions.json();
-
                     if (transactionData && Array.isArray(transactionData.content)) {
                         setTransactions(transactionData.content);
                     } else if (Array.isArray(transactionData)) {
@@ -69,7 +79,7 @@ function Transactions(){
             }
         };
         carregarDados();
-    }, [mesSelecionado, anoSelecionado]);
+    }, [startMonth, startYear, endMonth, endYear, isRangeActive]);
 
     const formatarMoeda=(valor:number)=>{
         return new Intl.NumberFormat('pt-BR', {
@@ -100,17 +110,45 @@ function Transactions(){
                         <section className="bg-white w-full h-[89vh] z-10 flex flex-col p-10 rounded-tl-3xl rounded-tr-3xl justify-between overflow-y-auto">
                             <div className="flex">
                                 <div className="flex flex-row">
-                                    <div className='flex flex-row mr-5'>
+                                    
+                                    <span className="text-black text-xs font-medium mr-2">
+                                        {isRangeActive ? "De:" : ""}
+                                    </span>
+
+                                    <div className='flex flex-row mr-3'>
                                         <div className='-mt-1.5'>
-                                            <MonthSelector className="w-30" divInsideButtonClassName="p-1 ml-19" ioIoArrowDownClassName="h-3.5 w-3.5" selectedMonth={mesSelecionado} onMonthChange={setMesSelecionado}/>
+                                            <MonthSelector className="w-30" divInsideButtonClassName="p-1 ml-19" ioIoArrowDownClassName="h-3.5 w-3.5" selectedMonth={nomesMeses[startMonth-1]} onMonthChange={(nomeDoMes) => setStartMonth(mesesMap[nomeDoMes])}/>
                                         </div>
                                     </div>
                                     <div className='flex flex-row'>
                                         <div className='-mt-1.5'>
-                                            <YearSelector selectedYear={anoSelecionado} onYearChange={setAnoSelecionado} />
+                                            <YearSelector className="w-25" divInsideButtonClassName="p-1 ml-14" ioIoArrowDownClassName="h-3.5 w-3.5" selectedYear={startYear} onYearChange={setStartYear}/>
                                         </div>
                                     </div>
+                                    
                                 </div>
+                                {isRangeActive &&(
+                                    <div className="flex flex-row">
+                                        <p className="text-black text-xs font-medium mr-2 ml-6">Até</p>
+                                        <div className="-mt-1.5 mr-3">
+                                            <MonthSelector selectedMonth={nomesMeses[endMonth]} onMonthChange={(nomeDoMes) => setStartMonth(mesesMap[nomeDoMes])}/>
+                                        </div>
+                                        <div className="-mt-1.5">
+                                            <YearSelector selectedYear={endYear} onYearChange={setEndYear}/>
+                                        </div>
+                                    </div>
+                                )}
+                                <button 
+                                        onClick={() => setIsRangeActive(!isRangeActive)}
+                                        className={`flex flex-row -mt-1.5 ml-3 text-xs font-medium px-3 py-1.5 rounded-xl transition-all duration-200 ${
+                                            isRangeActive 
+                                                ? 'bg-red-500/20 text-red-600 border border-red-400/30 hover:bg-red-500/30' 
+                                                : 'bg-blue-400 text-white hover:bg-blue-600 border-blue-800'
+                                        }`}
+                                    >
+                                        {isRangeActive ? "✕ Cancelar Intervalo" : "+ Filtrar Período"}
+                                </button>
+                                
                             </div>
                             <div className="bg-green-100 hidden lg:grid lg:grid-cols-[140px_1.6fr_1fr_1fr_1fr_1fr_1.3fr_1px] px-6 text-xs font-semibold text-gray-400 text-center items-center mb-2">
                                 <div></div>
