@@ -31,55 +31,80 @@ function Transactions(){
     const dataAtual=new Date();
     const[transactions, setTransactions]=useState<Transaction[]>([]);
 
+    const[page, setPage]=useState<number>(0);
+    const [loading, setLoading]=useState<boolean>(false);
+    const [isLastPage, setIsLastPage]=useState<boolean>(false);
+
     const [startMonth, setStartMonth] = useState<number>(dataAtual.getMonth()+1);
     const [startYear, setStartYear] = useState<number>(dataAtual.getFullYear());
     const [endMonth, setEndMonth] = useState<number>(dataAtual.getMonth()+1);
     const [endYear, setEndYear] = useState<number>(dataAtual.getFullYear());
 
-    const getRangeDates=()=>{
-        const startMFormatted=String(startMonth).padStart(2, '0');
-        const startDate=`${startYear}-${startMFormatted}-01T00:00:00`;
-        const finalM=isRangeActive?endMonth:startMonth;
-        const finalY=isRangeActive?endYear:startYear;
-        const lastDay=new Date(finalY, finalM, 0).getDate();
-        const lastDayFormatted=String(lastDay).padStart(2, '0');
-        const finalMFormatted=String(finalM).padStart(2, '0');
-        const endDate=`${finalY}-${finalMFormatted}-${lastDayFormatted}T23:59:59`;
-        return { startDate, endDate };
-    }
 
-    useEffect(()=>{
-        const carregarDados=async()=>{
-            try{
-                const token=localStorage.getItem('tokenJwt');
-                const headers={
-                    'Content-Type':'application/json',
-                    'Authorization':`Bearer ${token}`
+    useEffect(() => {
+        setPage(0);
+        setTransactions([]);
+        setIsLastPage(false);
+    }, [startMonth, startYear, endMonth, endYear, isRangeActive]);
+
+    useEffect(() => {
+        const carregarDados = async () => {
+            if (isLastPage && page !== 0) return;
+
+            try {
+                setLoading(true);
+                const token = localStorage.getItem('tokenJwt');
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 };
-                const { startDate, endDate } = getRangeDates();
-                const urlTransactions=`http://localhost:8080/api/transactions?startDate=${startDate}&endDate=${endDate}&size=50`;
-                const [responseTransactions]=await Promise.all([
-                    fetch(urlTransactions, {method:'GET', headers})
-                ]);
+
+                const startMFormatted = String(startMonth).padStart(2, '0');
+                const startDate = `${startYear}-${startMFormatted}-01T00:00:00`;
+                const finalM = isRangeActive ? endMonth : startMonth;
+                const finalY = isRangeActive ? endYear : startYear;
+                const lastDay = new Date(finalY, finalM, 0).getDate();
+                const lastDayFormatted = String(lastDay).padStart(2, '0');
+                const finalMFormatted = String(finalM).padStart(2, '0');
+                const endDate = `${finalY}-${finalMFormatted}-${lastDayFormatted}T23:59:59`;
+
+                const urlTransactions = `http://localhost:8080/api/transactions?startDate=${startDate}&endDate=${endDate}&page=${page}&size=20`;
+                
+                const responseTransactions = await fetch(urlTransactions, { method: 'GET', headers });
 
                 if (responseTransactions.ok) {
                     const transactionData = await responseTransactions.json();
+
+                    let newTransactions: Transaction[] = [];
                     if (transactionData && Array.isArray(transactionData.content)) {
-                        setTransactions(transactionData.content);
+                        newTransactions = transactionData.content;
                     } else if (Array.isArray(transactionData)) {
-                        setTransactions(transactionData);
-                    } else {
-                        setTransactions([]);
+                        newTransactions = transactionData;
                     }
-                }else{
-                    console.error("Erro ao buscar as informacoes", responseTransactions.status);
+
+                    const isLast = transactionData?.last ?? transactionData?.lastPage ?? (newTransactions.length < 20);
+                    setIsLastPage(Boolean(isLast));
+
+                    if (page === 0) {
+                        setTransactions(newTransactions);
+                    } else {
+                        setTransactions(prev => {
+                            const listaAnterior = Array.isArray(prev) ? prev : [];
+                            return [...listaAnterior, ...newTransactions];
+                        });
+                    }
+                } else {
+                    console.error("Erro ao buscar as informações", responseTransactions.status);
                 }
-            }catch(erro){
-                console.error("Erro de conexao", erro);
+            } catch (erro) {
+                console.error("Erro de conexão", erro);
+            } finally {
+                setLoading(false);
             }
         };
+
         carregarDados();
-    }, [startMonth, startYear, endMonth, endYear, isRangeActive]);
+    }, [page, startMonth, startYear, endMonth, endYear, isRangeActive]);
 
     const formatarMoeda=(valor:number)=>{
         return new Intl.NumberFormat('pt-BR', {
@@ -117,12 +142,20 @@ function Transactions(){
 
                                     <div className='flex flex-row mr-3'>
                                         <div className='-mt-1.5'>
-                                            <MonthSelector className="w-30" divInsideButtonClassName="p-1 ml-19" ioIoArrowDownClassName="h-3.5 w-3.5" selectedMonth={nomesMeses[startMonth-1]} onMonthChange={(nomeDoMes) => setStartMonth(mesesMap[nomeDoMes])}/>
+                                            <MonthSelector className="w-30" 
+                                            divInsideButtonClassName="p-1 ml-19" 
+                                            ioIoArrowDownClassName="h-3.5 w-3.5" 
+                                            selectedMonth={nomesMeses[startMonth-1]} 
+                                            onMonthChange={(nomeDoMes) => setStartMonth(mesesMap[nomeDoMes])}/>
                                         </div>
                                     </div>
                                     <div className='flex flex-row'>
                                         <div className='-mt-1.5'>
-                                            <YearSelector className="w-25" divInsideButtonClassName="p-1 ml-14" ioIoArrowDownClassName="h-3.5 w-3.5" selectedYear={startYear} onYearChange={setStartYear}/>
+                                            <YearSelector className="w-25" 
+                                            divInsideButtonClassName="p-1 ml-14" 
+                                            ioIoArrowDownClassName="h-3.5 w-3.5" 
+                                            selectedYear={startYear} 
+                                            onYearChange={setStartYear}/>
                                         </div>
                                     </div>
                                     
@@ -131,10 +164,18 @@ function Transactions(){
                                     <div className="flex flex-row">
                                         <p className="text-black text-xs font-medium mr-2 ml-6">Até</p>
                                         <div className="-mt-1.5 mr-3">
-                                            <MonthSelector selectedMonth={nomesMeses[endMonth]} onMonthChange={(nomeDoMes) => setStartMonth(mesesMap[nomeDoMes])}/>
+                                            <MonthSelector className="w-30" 
+                                            divInsideButtonClassName="p-1 ml-19" 
+                                            ioIoArrowDownClassName="h-3.5 w-3.5" 
+                                            selectedMonth={nomesMeses[endMonth-1]} 
+                                            onMonthChange={(nomeDoMes) => setEndMonth(mesesMap[nomeDoMes])}/>
                                         </div>
                                         <div className="-mt-1.5">
-                                            <YearSelector selectedYear={endYear} onYearChange={setEndYear}/>
+                                            <YearSelector className="w-25" 
+                                            divInsideButtonClassName="p-1 ml-14" 
+                                            ioIoArrowDownClassName="h-3.5 w-3.5" 
+                                            selectedYear={endYear} 
+                                            onYearChange={setEndYear}/>
                                         </div>
                                     </div>
                                 )}
@@ -160,7 +201,11 @@ function Transactions(){
                                 <div></div>
                             </div>
 
-                            <div className="lg:h-[620px] gap-7 flex flex-col justify-between overflow-y-auto scrollbar-thin pt-3">
+                            <div className="lg:h-[620px] gap-7 flex flex-col justify-between overflow-y-auto scrollbar-thin pt-3" 
+                            onScroll={(e)=>{const {scrollTop, clientHeight, scrollHeight} = e.currentTarget; 
+                            if(scrollHeight - scrollTop <= clientHeight + 50 && !loading && !isLastPage) {setPage(prevPage=>prevPage+1);}
+                            }}>
+
                                 {transactions && transactions.map((item, index) => {
                                     if (!item) return null;
                                     const isIncome = item.transactionType === 'INCOME';
@@ -229,6 +274,12 @@ function Transactions(){
                                     </div>
                                 );
                                 })}
+
+                                {loading && (
+                                    <div className="text-center py-4 text-xs font-semibold text-gray-400 animate-pulse">
+                                        Carregando mais transações...
+                                    </div>
+                                )}
                             </div>
                         </section>
                     </div>
