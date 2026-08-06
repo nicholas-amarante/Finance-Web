@@ -5,6 +5,7 @@ import { Logo } from "../components/Logo";
 import { Navbar } from "../components/Navbar";
 import {MonthSelector} from '../components/MonthSelector';
 import { YearSelector } from '../components/YearSelector';
+import { TransactionTypeSelector } from "../components/TransactionTypeSelector";
 
 interface Transaction{
     id:number;
@@ -27,6 +28,7 @@ function Transactions(){
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
+    const [selectedType, setSelectedType] = useState<string>("ALL");
     const [isRangeActive, setIsRangeActive] = useState<boolean>(false);
     const dataAtual=new Date();
     const[transactions, setTransactions]=useState<Transaction[]>([]);
@@ -45,7 +47,7 @@ function Transactions(){
         setPage(0);
         setTransactions([]);
         setIsLastPage(false);
-    }, [startMonth, startYear, endMonth, endYear, isRangeActive]);
+    }, [startMonth, startYear, endMonth, endYear, isRangeActive, selectedType]);
 
     useEffect(() => {
         const carregarDados = async () => {
@@ -59,6 +61,7 @@ function Transactions(){
                     'Authorization': `Bearer ${token}`
                 };
 
+                const typeParam = selectedType !== "ALL" ? `&type=${selectedType}` : "";
                 const startMFormatted = String(startMonth).padStart(2, '0');
                 const startDate = `${startYear}-${startMFormatted}-01T00:00:00`;
                 const finalM = isRangeActive ? endMonth : startMonth;
@@ -68,7 +71,7 @@ function Transactions(){
                 const finalMFormatted = String(finalM).padStart(2, '0');
                 const endDate = `${finalY}-${finalMFormatted}-${lastDayFormatted}T23:59:59`;
 
-                const urlTransactions = `http://localhost:8080/api/transactions?startDate=${startDate}&endDate=${endDate}&page=${page}&size=20`;
+                const urlTransactions = `http://localhost:8080/api/transactions?startDate=${startDate}&endDate=${endDate}&page=${page}&size=20&type=${typeParam}`;
                 
                 const responseTransactions = await fetch(urlTransactions, { method: 'GET', headers });
 
@@ -104,7 +107,7 @@ function Transactions(){
         };
 
         carregarDados();
-    }, [page, startMonth, startYear, endMonth, endYear, isRangeActive]);
+    }, [page, startMonth, startYear, endMonth, endYear, isRangeActive, selectedType]);
 
     const formatarMoeda=(valor:number)=>{
         return new Intl.NumberFormat('pt-BR', {
@@ -181,17 +184,19 @@ function Transactions(){
                                 )}
                                 <button 
                                         onClick={() => setIsRangeActive(!isRangeActive)}
-                                        className={`flex flex-row -mt-1.5 ml-3 text-xs font-medium px-3 py-1.5 rounded-xl transition-all duration-200 ${
+                                        className={`flex -mt-2 ml-2 text-xs font-medium h-7.5 w-27 justify-center items-center rounded-xl transition-all duration-200 ${
                                             isRangeActive 
-                                                ? 'bg-red-500/20 text-red-600 border border-red-400/30 hover:bg-red-500/30' 
-                                                : 'bg-blue-400 text-white hover:bg-blue-600 border-blue-800'
+                                                ? 'bg-red-500/20 text-red-600  hover:bg-red-500/30' 
+                                                : 'bg-green-500 text-white hover:bg-green-600 '
                                         }`}
                                     >
-                                        {isRangeActive ? "✕ Cancelar Intervalo" : "+ Filtrar Período"}
+                                        {isRangeActive ? "✕ Cancelar" : "+ Filtrar Período"}
                                 </button>
-                                
+                                <div>
+                                    <TransactionTypeSelector selectedType={selectedType} onTypeChange={setSelectedType}/>
+                                </div>
                             </div>
-                            <div className="bg-green-100 hidden lg:grid lg:grid-cols-[140px_1.6fr_1fr_1fr_1fr_1fr_1.3fr_1px] px-6 text-xs font-semibold text-gray-400 text-center items-center mb-2">
+                            <div className=" hidden lg:grid lg:grid-cols-[140px_1.6fr_1fr_1fr_1fr_1fr_1.3fr_1px] px-6 text-xs font-semibold text-gray-400 text-center items-center mb-2">
                                 <div></div>
                                 <div className="text-left">Nome</div>
                                 <div className="text-left">Descrição</div>
@@ -201,7 +206,7 @@ function Transactions(){
                                 <div></div>
                             </div>
 
-                            <div className="lg:h-[620px] gap-7 flex flex-col justify-between overflow-y-auto scrollbar-thin pt-3" 
+                            <div className="lg:h-[630px] gap-7 flex flex-col justify-between overflow-y-auto scrollbar-thin pt-3 pb-5" 
                             onScroll={(e)=>{const {scrollTop, clientHeight, scrollHeight} = e.currentTarget; 
                             if(scrollHeight - scrollTop <= clientHeight + 50 && !loading && !isLastPage) {setPage(prevPage=>prevPage+1);}
                             }}>
@@ -225,13 +230,13 @@ function Transactions(){
         
                                         {!isEmpty ? (
                                             <>
-                                                {/* 2. Nome e Data */}
+                                                {/*Nome e Data*/}
                                                 <div className='flex flex-col text-center lg:text-left w-full'>
                                                     <span className='font-bold text-gray-800 text-base lg:text-sm'>{item.name || "Sem nome"}</span>
                                                     <span className='text-[10px] text-gray-400 mt-2'>{formatarData(item.dateTime)}</span>
                                                 </div>
         
-                                                {/* 3. Descrição */}
+                                                {/*Descrição*/}
                                                 <div className='relative group text-gray-500 text-center lg:text-left min-w-0 px-2 cursor-pointer'>
                                                     <p className='text-gray-500 text-center lg:text-left truncate w-full'>
                                                         {item.description || "Sem descricao"}
@@ -247,28 +252,28 @@ function Transactions(){
                                                     )}
                                                 </div>
         
-                                                {/* 4. Banco */}
+                                                {/*Banco*/}
                                                 <div className='text-gray-600 font-medium bg-white lg:bg-transparent px-3 py-1 rounded-full lg:p-0 border border-gray-200 lg:border-none'>
                                                     {item.bank || "-"}
                                                 </div>
         
-                                                {/* 6. Categoria */}
+                                                {/*Categoria*/}
                                                 <div className='text-gray-500 bg-gray-200/50 px-3 py-1 rounded-md text-xs font-semibold'>
                                                     {item.categoryName || "Geral"}
                                                 </div>
         
-                                                {/* 8. Valor Cadastrado (Caixa Branca de Destaque) */}
+                                                {/*Valor Cadastrado*/}
                                                 <div className='font-bold text-gray-700 bg-white px-4 py-1.5 rounded-lg border border-gray-200/80 shadow-sm w-full max-w-[120px] lg:max-w-none'>
                                                     {formatarMoeda(item.value)}
                                                 </div>
         
-                                                {/* 10. Botão de Opções (Três Pontinhos) */}
+                                                {/*Botão de Opções*/}
                                                 <button className='text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200/50 transition-colors lg:ml-auto'>
                                                     <MoreVertical size={20} />
                                                 </button>
                                             </>
                                         ) : (
-                                            // Layout vazio para as linhas de marcação (Skeleton lines)
+                                            // Layout vazio
                                             <div className="col-span-9 w-full h-4 hidden lg:block" />
                                         )}
                                     </div>
