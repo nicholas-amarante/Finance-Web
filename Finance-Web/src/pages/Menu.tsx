@@ -89,7 +89,7 @@ function Menu(){
             }
         };
         carregarDados();
-    }, [mesSelecionado, anoSelecionado]);//executa novamente caso o mes seja alterado
+    }, [mesSelecionado, anoSelecionado]);
 
 
         const formatarMoeda=(valor:number)=>{

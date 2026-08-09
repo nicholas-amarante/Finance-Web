@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { IoIosArrowDown } from "react-icons/io";
 import { cn } from "../utils/cn";
 
 interface TransactionTypeSelectorProps {
@@ -8,12 +6,12 @@ interface TransactionTypeSelectorProps {
     className?:string;
 }
 
-export function TransactionTypeSelector({selectedType, onTypeChange}:TransactionTypeSelectorProps){
+export function TransactionTypeSelector({selectedType, onTypeChange, className}:TransactionTypeSelectorProps){
     return(
         <select 
         value={selectedType}
-        onChange={(e)=>onTypeChange(e.target.value)}
-        className="bg-white"
+        onChange={(e)=>onTypeChange(e.target.value as 'ALL' | 'INCOME' | 'EXPENSE')}
+        className={cn("bg-white", className)}
         >
             <option value="ALL">Todos</option>
             <option value="INCOME">Receita</option>

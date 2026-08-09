@@ -6,6 +6,7 @@ import { Navbar } from "../components/Navbar";
 import {MonthSelector} from '../components/MonthSelector';
 import { YearSelector } from '../components/YearSelector';
 import { TransactionTypeSelector } from "../components/TransactionTypeSelector";
+import {TransactionCategoriesSelector} from "../components/TransactionCategoriesSelector";
 
 interface Transaction{
     id:number;
@@ -29,6 +30,7 @@ function Transactions(){
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
     const [selectedType, setSelectedType] = useState<string>("ALL");
+    const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
     const [isRangeActive, setIsRangeActive] = useState<boolean>(false);
     const dataAtual=new Date();
     const[transactions, setTransactions]=useState<Transaction[]>([]);
@@ -71,7 +73,7 @@ function Transactions(){
                 const finalMFormatted = String(finalM).padStart(2, '0');
                 const endDate = `${finalY}-${finalMFormatted}-${lastDayFormatted}T23:59:59`;
 
-                const urlTransactions = `http://localhost:8080/api/transactions?startDate=${startDate}&endDate=${endDate}&page=${page}&size=20&type=${typeParam}`;
+                const urlTransactions = `http://localhost:8080/api/transactions?startDate=${startDate}&endDate=${endDate}&page=${page}&size=20${typeParam}`;
                 
                 const responseTransactions = await fetch(urlTransactions, { method: 'GET', headers });
 
@@ -192,8 +194,12 @@ function Transactions(){
                                     >
                                         {isRangeActive ? "✕ Cancelar" : "+ Filtrar Período"}
                                 </button>
+                                <div className="flex ml-10 -mt-3.5 py-2 px-3 bg-gray-100 rounded-lg">
+                                    <p className="flex-row">Tipo Transação:</p>
+                                    <TransactionTypeSelector className="ml-2 flex-row py-1 px-2 rounded-md" selectedType={selectedType} onTypeChange={setSelectedType}/>
+                                </div>
                                 <div>
-                                    <TransactionTypeSelector selectedType={selectedType} onTypeChange={setSelectedType}/>
+                                    <TransactionCategoriesSelector selectedCategory="selectedCategory" onCategoryChange={setSelectedCategory}/>
                                 </div>
                             </div>
                             <div className=" hidden lg:grid lg:grid-cols-[140px_1.6fr_1fr_1fr_1fr_1fr_1.3fr_1px] px-6 text-xs font-semibold text-gray-400 text-center items-center mb-2">
