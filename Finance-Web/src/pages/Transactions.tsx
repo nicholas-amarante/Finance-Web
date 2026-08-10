@@ -13,7 +13,7 @@ interface Transaction{
     name:string;
     description:string;
     value:number;
-    categoryName:string;
+    category:string;
     transactionType:'INCOME'|'EXPENSE';
     dateTime:string;
     bank:string;
@@ -49,7 +49,7 @@ function Transactions(){
         setPage(0);
         setTransactions([]);
         setIsLastPage(false);
-    }, [startMonth, startYear, endMonth, endYear, isRangeActive, selectedType]);
+    }, [startMonth, startYear, endMonth, endYear, isRangeActive, selectedType, selectedCategory]);
 
     useEffect(() => {
         const carregarDados = async () => {
@@ -63,6 +63,7 @@ function Transactions(){
                     'Authorization': `Bearer ${token}`
                 };
 
+                const categoryParam=selectedCategory!=="ALL"?`&category=${encodeURIComponent(selectedCategory)}`:"";
                 const typeParam = selectedType !== "ALL" ? `&type=${selectedType}` : "";
                 const startMFormatted = String(startMonth).padStart(2, '0');
                 const startDate = `${startYear}-${startMFormatted}-01T00:00:00`;
@@ -73,7 +74,7 @@ function Transactions(){
                 const finalMFormatted = String(finalM).padStart(2, '0');
                 const endDate = `${finalY}-${finalMFormatted}-${lastDayFormatted}T23:59:59`;
 
-                const urlTransactions = `http://localhost:8080/api/transactions?startDate=${startDate}&endDate=${endDate}&page=${page}&size=20${typeParam}`;
+                const urlTransactions = `http://localhost:8080/api/transactions?startDate=${startDate}&endDate=${endDate}&page=${page}&size=20${typeParam}${categoryParam}`;
                 
                 const responseTransactions = await fetch(urlTransactions, { method: 'GET', headers });
 
@@ -109,7 +110,7 @@ function Transactions(){
         };
 
         carregarDados();
-    }, [page, startMonth, startYear, endMonth, endYear, isRangeActive, selectedType]);
+    }, [page, startMonth, startYear, endMonth, endYear, isRangeActive, selectedType, selectedCategory]);
 
     const formatarMoeda=(valor:number)=>{
         return new Intl.NumberFormat('pt-BR', {
@@ -194,12 +195,13 @@ function Transactions(){
                                     >
                                         {isRangeActive ? "✕ Cancelar" : "+ Filtrar Período"}
                                 </button>
-                                <div className="flex ml-10 -mt-3.5 py-2 px-3 bg-gray-100 rounded-lg">
-                                    <p className="flex-row">Tipo Transação:</p>
-                                    <TransactionTypeSelector className="ml-2 flex-row py-1 px-2 rounded-md" selectedType={selectedType} onTypeChange={setSelectedType}/>
+                                <div className="flex ml-10 mr-5 -mt-2.5 py-1 px-2 bg-gray-100 rounded-lg">
+                                    <p className="">Tipo Transação:</p>
+                                    <TransactionTypeSelector className="ml-1 flex-row px-1 rounded-sm" selectedType={selectedType} onTypeChange={setSelectedType}/>
                                 </div>
-                                <div>
-                                    <TransactionCategoriesSelector selectedCategory="selectedCategory" onCategoryChange={setSelectedCategory}/>
+                                <div className="flex ml-1 mr-1 -mt-2.5 py-1 px-2 bg-gray-100 rounded-lg">
+                                    <p className="">Categoria:</p>
+                                    <TransactionCategoriesSelector className="ml-1 flex-row px-1 rounded-sm " selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory}/>
                                 </div>
                             </div>
                             <div className=" hidden lg:grid lg:grid-cols-[140px_1.6fr_1fr_1fr_1fr_1fr_1.3fr_1px] px-6 text-xs font-semibold text-gray-400 text-center items-center mb-2">
@@ -265,7 +267,7 @@ function Transactions(){
         
                                                 {/*Categoria*/}
                                                 <div className='text-gray-500 bg-gray-200/50 px-3 py-1 rounded-md text-xs font-semibold'>
-                                                    {item.categoryName || "Geral"}
+                                                    {item.category || "Geral"}
                                                 </div>
         
                                                 {/*Valor Cadastrado*/}
