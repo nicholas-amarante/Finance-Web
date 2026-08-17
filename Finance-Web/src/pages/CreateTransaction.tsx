@@ -8,17 +8,19 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { SucessModal } from '../components/SuccessModal';
 import { Navbar } from '../components/Navbar';
+import {formatCurrency} from '../utils/formatters';
 
 function CreateTransaction(){
     const navigate=useNavigate();
     const [name, setName]=useState('');
+    const [description, setDescription]=useState('');
     const [value, setValue]=useState('');
-    const [account, setAccount]=useState('');
+    const [dateTime, setDateTime]=useState('');
     const [transactionType, setTransactionType]=useState('');
+    const [categorySelected, setCategorySelected] =useState("");
 
     const [bankSelected, setBankSelected]=useState("")
     const [accountSelected, setAccountSelected] = useState("");
-    const [categorySelected, setCategorySelected] =useState("");
 
     const [erro, setErro]=useState('');
     const [errors, setErrors]=useState<{[key: string]: string}>({});
@@ -39,7 +41,7 @@ function CreateTransaction(){
         name:String;
     }
 
-    useEffect(()=>{//PUXA DO BACK ---
+    useEffect(()=>{
         const loadData=async()=>{
             try{
                 const token=localStorage.getItem('tokenJwt');
@@ -71,7 +73,7 @@ function CreateTransaction(){
         loadData();
     }, []);
 
-    const validateFields=()=>{//VERIFICA OS CAMPOS ---
+    const validateFields=()=>{
         const newErrors:{[key:string]: string}={};
         if(!name.trim()) newErrors.name="* Campo nome obrigatório";
         if(!value || Number(value)<=0) newErrors.value="* Campo valor deve ser maior que zero";
@@ -82,15 +84,32 @@ function CreateTransaction(){
         return Object.keys(newErrors).length===0;
     }
 
-    const bankOptions=Array.from(new Set(accountsRaw.map(a=> a.bank_name))) //FILTRA BASEADO NO BANCO ---
+    const bankOptions=Array.from(new Set(accountsRaw.map(a=> a.bank_name)))
         .map(name=>({value:name, label:name}));
     const accountOptions=accountsRaw.filter(a=>a.bank_name===bankSelected)
         .map(a=>({value:String(a.id), label: a.description}));
 
-    const handleCreateTransaction=async(e: React.FormEvent)=>{//POST PARA O ENDPOINT ---
-        e.preventDefault(); //evita que a pagina recarregue
+    const handleCreateTransaction=async(e: React.FormEvent)=>{
+        e.preventDefault();
 
         if(!validateFields()) return;
+
+        const formatDateTimePayload = (selectedDate: string) => {
+            if (!selectedDate) return null;
+            const now = new Date();
+            const currentTime = now.toTimeString().split(' ')[0];
+            return `${selectedDate}T${currentTime}`;
+        };
+
+        const payload={
+            name:name.trim(),
+            description:description?.trim()||null,
+            value:typeof value==='string'?Number(value.replace(/\D/g, ''))/100:Number(value),
+            account_id:Number(accountSelected),
+            transactionType:transactionType,
+            category:categorySelected,
+            dateTime:formatDateTimePayload(dateTime)
+        };
 
         try{
             const token=localStorage.getItem('tokenJwt');
@@ -100,13 +119,7 @@ function CreateTransaction(){
                     'Content-Type':'application/json',
                     'Authorization':`Bearer ${token}`
                 },
-                body:JSON.stringify({
-                    name:name,
-                    value:value,
-                    account_id:accountSelected,
-                    transactionType:transactionType,
-                    category:categorySelected
-                }),
+                body:JSON.stringify(payload),
             });
             if(response.ok){
                 setIsModalOpen(true);
@@ -133,25 +146,25 @@ function CreateTransaction(){
                 </div>
                 
                 <div className='w-screen flex-1 flex items-center justify-center py-12'>
-                    <div className='w-11/12 xl:w-10/12 flex flex-col'>
+                    <div className='w-screen xl:w-10/12 flex flex-col items-center'>
                         <div className='flex flex-col'>
                             <h1 className='leading-relaxed font-p text-white mb-6 ml-2 sm:ml-4 text-3xl sm:text-4xl'>Criar Transação</h1>
                         </div>
 
-                        <div className='bg-white w-full h-auto p-6 sm:p-10 rounded-3xl flex flex-col justify-between shadow-2xl'>
+                        <div className='bg-white w-9/12 min-h-[65vh] h-auto p-5 sm:p-10 rounded-3xl z-10 flex flex-col justify-between shadow-2xl'>
 
                             <form className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6 font-p w-full'>
-                                <div className='flex flex-col gap-1.5'>
+                                <div className='md:col-span-1 flex flex-col gap-1.5'>
                                     <label className="font-medium text-gray-700 text-sm">Nome</label>
                                     <Input type="text" name="name" className='w-full' value={name} onChange={(e)=>setName(e.target.value)} placeholder="Digite seu nome*"/>
                                     {errors.name&&<span className="text-red-500 text-xs">{errors.name}</span>}
                                 </div>
-                                <div className='flex flex-col gap-1.5'>
+                                <div className='md:col-span-1 flex flex-col gap-1.5'>
                                     <label className="font-medium text-gray-700 text-sm">Valor</label>
-                                    <Input type="number" name="value" className='w-full' value={value} onChange={(e)=>setValue(e.target.value)} placeholder="Digite um valor*"/>
+                                    <Input type="text" name="value" className='w-full' value={value} onChange={(e)=>setValue(formatCurrency(e.target.value))} placeholder="R$ 0,00"/>
                                     {errors.value&&<span className="text-red-500 text-xs">{errors.value}</span>}
                                 </div>
-                                <div className='flex flex-col gap-1.5'>
+                                <div className='md:col-span-1 flex flex-col gap-1.5'>
                                     <label className="font-medium text-gray-700 text-sm">Tipo</label>
                                     <Select name="transactionType" id="" className='w-full' value={transactionType} onChange={(e)=>setTransactionType(e.target.value)}>
                                         <option value="" disabled selected>Selecione o tipo</option>
@@ -160,44 +173,51 @@ function CreateTransaction(){
                                     </Select>
                                     {errors.transactionType&&<span className="text-red-500 text-xs">{errors.transactionType}</span>}
                                 </div>
-                                <div className='flex flex-col gap-1.5'>
+                                <div className='md:col-span-1 flex flex-col gap-1.5'>
                                     <label className="font-medium text-gray-700 text-sm">Banco</label>
-                                    <Select name="BankId" id="" className='w-full' options={bankOptions} value={bankSelected} onChange={(e)=>{setBankSelected(e.target.value); setAccountSelected(""); }}>
+                                    <Select name="BankId" id="" className='' options={bankOptions} value={bankSelected} onChange={(e)=>{setBankSelected(e.target.value); setAccountSelected(""); }}>
                                         <option value="" disabled selected>Selecione o banco</option>
                                     </Select>
                                 </div>
-                                <div className='md:col-span-3 flex flex-col gap-2'>
-                                    <label htmlFor="">Conta</label>
+                                <div className='md:col-span-1 flex flex-col gap-1.5'>
+                                    <label className='font-medium text-gray-700 text-sm'>Conta</label>
                                     <Select name="accounts" id="" options={accountOptions} value={accountSelected} onChange={(e) => setAccountSelected(e.target.value)} disabled={!bankSelected}>
                                         <option value="" disabled selected>{bankSelected ? "Selecione a conta":"Selecione o banco primeiro"}</option>
                                     </Select>
                                     {errors.accounts&&<span className="text-red-500 text-xs">{errors.accounts}</span>}
                                 </div>
-                                <div className='flex flex-col gap-1.5'>
+                                <div className='md:col-span-1 flex flex-col gap-1.5'>
                                     <label className="font-medium text-gray-700 text-sm">Categoria</label>
-                                    <Select name='categorys' id="" className='w-full' options={categorys} value={categorySelected} onChange={(e)=> setCategorySelected(e.target.value)}>
+                                    <Select name='categorys' id="" className='' options={categorys} value={categorySelected} onChange={(e)=> setCategorySelected(e.target.value)}>
                                         <option value="" disabled selected>Selecione uma categoria</option>
                                     </Select>
                                     {errors.categorys&&<span className="text-red-500 text-xs">{errors.categorys}</span>}
                                 </div>
-                                <div className='md:col-span-3 flex flex-col gap-2'>
-                                    <label htmlFor="font-medium">Fonte</label>
+                                <div className='md:col-span-1 flex flex-col gap-1.5'>
+                                    <label className='font-medium text-gray-700 text-sm'>Fonte</label>
                                     <Select name="" id="" className=''>
                                         <option value="" disabled selected>Selecione a fonte</option>
                                     </Select>
                                 </div>
-                                <div className='md:col-span-3 flex flex-col gap-2'>
-                                    <label htmlFor="font-medium">Destino</label>
+                                <div className='md:col-span-1 flex flex-col gap-2'>
+                                    <label className='font-medium text-gray-700 text-sm'>Destino</label>
                                     <Input type="text" className='' placeholder="Digite um destino(opcional)"/>
                                 </div>
 
-                                <div className='md:col-span-4 flex flex-col gap-2'>
-                                    <label htmlFor="">Descrição</label>
-                                    <Input type="text" className='' placeholder="Digite uma descrição(opcional)"/>
+                                <div className='md:col-span-3 flex flex-col gap-2'>
+                                    <label className='font-medium text-gray-700 text-sm'>Descrição</label>
+                                    <Input type="text" className='' value={description} onChange={(e)=>setDescription(e.target.value)} placeholder="Digite uma descrição(opcional)"/>
+                                </div>
+                                <div>
+                                    <label className='font-medium text-gray-700 text-sm'>
+                                        Data da Transação <span className="text-gray-400 font-normal">(Opcional)</span>
+                                    </label>
+                                    <Input type='date' name='datetime' className='w-full' value={dateTime} onChange={(e)=>setDateTime(e.target.value)}/>
+                                    {errors.dateTime && (<span className='text-red-500 text-xs'></span>)}
                                 </div>
                             </form>
 
-                           <div className='flex flex-col sm:flex-row justify-center items-center gap-4 mt-12 w-full'>
+                            <div className='flex flex-col sm:flex-row justify-center items-center gap-4 mt-12 w-full'>
                                 <div className='w-full sm:w-auto'>
                                     <Button className='w-full sm:w-40 py-2.5' onClick={handleCreateTransaction}>Enviar</Button>
                                 </div>
@@ -208,7 +228,18 @@ function CreateTransaction(){
 
                             <SucessModal 
                                 isOpen={isModalOpen} 
-                                onClose={() => setIsModalOpen(false)}
+                                onClose={() => {
+                                    setIsModalOpen(false);
+                                    setName('');
+                                    setDescription('');
+                                    setValue('');
+                                    setDateTime('');
+                                    setTransactionType('');
+                                    setBankSelected('');
+                                    setAccountSelected('');
+                                    setCategorySelected('');
+                                    setErrors({});
+                                }}
                                 title="Tudo certo!"
                                 message="Sua transação foi registrada e o saldo da conta já foi atualizado."
                             />
