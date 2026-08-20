@@ -10,14 +10,14 @@ function Home() {
   return (
     <>
       <div className="gradt h-screen w-screen noise relative overflow-hidden">
-        <div className="">
-          <Navbar/>
+        <div className='absolute z-20'>
+            <ExpandableMenu/>
         </div>
         <div>
-          <ExpandableMenu/>
+            <Logo/>
         </div>
         <div>
-          <Logo/>
+            <Navbar/>
         </div>
 
         <div className="h-full w-full flex items-center justify-center px-10">
